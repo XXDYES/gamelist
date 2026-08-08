@@ -1,0 +1,39 @@
+package org.example.gamelist.service;
+
+import jakarta.annotation.Resource;
+import org.example.gamelist.client.AiClient;
+import org.example.gamelist.dto.GameInfoDTO;
+import org.example.gamelist.exception.BusinessException;
+import org.example.gamelist.mapper.GameMapper;
+import org.example.gamelist.vo.GameVO;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class GameService {
+    @Resource
+    private GameMapper gameMapper;
+    @Resource
+    private AiClient aiClient;  // ← 新增：注入 AI 客户端
+    public List<GameVO> getGameList(Integer userId){
+        try{
+            List<GameVO> gameList = gameMapper.selectGamesByUserId(userId);
+            return gameList;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public GameInfoDTO getGameInfoFromAI(String gameName) {
+        // 参数校验
+        if (gameName == null || gameName.trim().isEmpty()) {
+            throw new BusinessException("游戏名称不能为空");
+        }
+        if (gameName.length() > 20) {
+            throw new BusinessException("游戏名称不能超过20个字符");
+        }
+        // 调用 AI 客户端
+        return aiClient.getGameInfo(gameName.trim());
+    }
+}
+

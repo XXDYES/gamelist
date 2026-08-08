@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "target": "ES2015",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "lib": ["esnext", "dom", "dom.iterable", "scripthost"],
+    "types": ["element-plus/global"]
+  },
+   // 👇 新增整个 include 和 exclude 部分
+  "include": ["src/**/*.vue", "src/**/*.js", "src/**/*.json"],
+  "exclude": ["node_modules", "dist"]
+}
+
