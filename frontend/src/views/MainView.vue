@@ -17,9 +17,50 @@
             </div>
         </div>
         <WallpaperSwitch v-model:bgurl="curbgurl" :bglist="bglist" />
+        <el-dialog v-model="dialogVisable" title="添加游戏" width="500" :before-close="handleClose">
+            <el-form :model="addGame.data" label-width="auto">
+                <el-form-item label="名称：" prop="name">
+                    <el-input v-model="addGame.data.name" placeholder="请输入" style="width: 200px;" />
+                    <AiGenButton @click="skillActive = true"></AiGenButton>
+                    <SkillOverlay :visible="skillActive" @finished="onSkillFinished" />
+                    <el-tooltip class="box-item" effect="dark" placement="right-start">
+                        <template #content>
+                            <div>输入名称后，AI自动生成剩下信息。</div>
+                            <div>⚠注：使用deepseek-v4-flash模型。</div>
+                            <div>返回数据大概需要5-15s，且数据截止日期为2025.5。</div>
+                        </template>
+                        <span style="display: inline-flex; align-items: center; height: 100%;">
+                            <el-icon :size="18"><InfoFilled /></el-icon>
+                        </span>
+                    </el-tooltip>
+                </el-form-item>
+                <el-form-item label="制作商：" prop="company">
+                    <el-input v-model="addGame.data.company" placeholder="请输入" />
+                </el-form-item>
+                <el-form-item label="平台：" prop="playform">
+                    <el-input v-model="addGame.data.platform" placeholder="请输入" />
+                </el-form-item>
+                <el-form-item label="游戏类型：" prop="type">
+                    <el-input v-model="addGame.data.type" placeholder="请输入" />
+                </el-form-item>
+                <el-form-item label="发售日期" prop="releaseDate">
+                    <el-date-picker v-model="addGame.data.releaseDate" type="date" placeholder="选择发售日期" />
+                </el-form-item>
+                <el-form-item label="游戏介绍" prop="info">
+                    <el-input v-model="addGame.data.info" maxlength="200" placeholder="Please input"
+                        show-word-limit type="textarea" :rows="4"/>
+                </el-form-item>
+            </el-form>
+            <template #footer>
+                <div class="dialog-footer">
+                    <el-button @click="dialogVisible = false">Cancel</el-button>
+                    <el-button type="primary" @click="dialogVisible = false"> Confirm </el-button>
+                </div>
+            </template>
+        </el-dialog>
         <div class="list_container">
             <el-tooltip class="box-item" effect="dark" content="添加游戏" placement="top-start">
-                <el-button class="plusbutton" circle :icon="Plus"></el-button>
+                <el-button class="plusbutton" circle :icon="Plus" @click="dialogVisable = true"></el-button>
             </el-tooltip>
             <div style="display: flex;justify-content: center;gap: 5px;">
                 <el-input v-model="inputword" class="search-input" style="width: 500px;height: 40px;"
@@ -143,10 +184,12 @@
     </div>
 </template>
 <script setup>
-import { Back, Operation, Picture, CirclePlus, Search, Delete, Edit, Select, Share, Plus, Sort, Menu, Top, Bottom } from '@element-plus/icons-vue'
+import { Back, Operation, Picture, CirclePlus, Search, Delete, Edit, Select, Share, Plus, Sort, Menu,InfoFilled} from '@element-plus/icons-vue'
 import { computed, onMounted, reactive, ref } from 'vue';
 import { ElMessage } from 'element-plus'
 import WallpaperSwitch from '@/components/WallpaperSwitch.vue';
+import SkillOverlay from '@/components/SkillOverlay.vue';
+import AiGenButton from '@/components/AiGenButton.vue';
 import 'element-plus/dist/index.css'
 import router from '@/router';
 import { userApi, gameApi } from '@/api'
@@ -162,13 +205,21 @@ const curbgurl = ref(bglist[Number(localStorage.getItem('bgIndex')) || 0])
 const userInfo = ref({ username: '未登录' });
 const keyword = ref('')
 const inputword = ref('')
-const sortField = ref('name')
-const sortOrder = ref('asc')
+const sortField = ref('addDate')
+const sortOrder = ref('desc')
 const sortPopVisible = ref(false)
-
+const skillActive = ref(false)
+const addGame = reactive({
+    data: { name: '', company: '', platform: '', type: '', info: '', price: '', mcRating: '', releaseDate: '' },
+    rules: {}
+})
+const onSkillFinished = () => {
+    skillActive.value = false
+    // TODO: 动画结束后在这里执行真正的后续逻辑
+}
 const resetSort = () => {
-    sortField.value = 'name'
-    sortOrder.value = 'asc'
+    sortField.value = 'addDate'
+    sortOrder.value = 'desc'
     sortPopVisible.value = false   // 重置完顺便关掉
 }
 const clicksearch = () => {
@@ -212,10 +263,6 @@ const handleClick = (tab, event) => {
     console.log(tab, event)
 }
 const dialogVisable = ref(false)
-const data = reactive({
-    game: { name: "", company: "", platform: "", type: "", date: "" },
-    rule: { name: [{ required: true, message: "请填写游戏名称" }] }
-})
 const loginout = () => {
     localStorage.removeItem("userToken")
     router.push("/login")
