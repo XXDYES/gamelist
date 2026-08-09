@@ -24,7 +24,7 @@ const routes = [
   {
     path: '/gamelist',
     name: 'admin',
-    component: () => import(/* webpackChunkName: "about" */ '../views/gamelist.vue')
+    component: () => import(/* webpackChunkName: "about" */ '../views/MainView.vue')
   },
   {
     path: '/register',

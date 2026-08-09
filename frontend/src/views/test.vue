@@ -78,7 +78,6 @@
                                 <span class="review-time">📅 {{ game.review.time }}</span>
                             </div>
                         </div>
-
                         <!-- 查看详情按钮 -->
                         <el-button class="btn-detail" text @click.stop="showDetail(game)">
                             📖 查看完整信息

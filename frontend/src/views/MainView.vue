@@ -16,33 +16,53 @@
                     userInfo.username || '未登录' }}</span>
             </div>
         </div>
-        <div style="top: 7%;right: 1%;position: fixed;">
-            <el-tooltip class="box-item" effect="dark" content="点击切换壁纸" placement="left">
-                <el-button type="primary" :icon="Picture" circle style="width: 50px; height: 50px; font-size: 25px;"
-                    @click="switchbg" />
-            </el-tooltip>
-        </div>
-        <el-dialog v-model="visable" width="500" align-center :show-close="false">
-            <template #header>
-                <div>添加游戏</div>
-            </template>
-            <span>addgames</span>
-        </el-dialog>
+        <WallpaperSwitch v-model:bgurl="curbgurl" :bglist="bglist" />
         <div class="list_container">
             <el-tooltip class="box-item" effect="dark" content="添加游戏" placement="top-start">
                 <el-button class="plusbutton" circle :icon="Plus"></el-button>
             </el-tooltip>
             <div style="display: flex;justify-content: center;gap: 5px;">
                 <el-input v-model="inputword" class="search-input" style="width: 500px;height: 40px;"
-                    placeholder="输入 名称/制作商/平台/类型 搜索..." :prefix-icon="Search" clearable @clear="clearkeyword"/>
-                <el-button type="primary" circle :icon="Search" style="width: 40px;height: 40px;font-size: 20px;"@click="clicksearch">
+                    placeholder="输入 名称/制作商/平台/类型 搜索..." :prefix-icon="Search" clearable @clear="clearkeyword" />
+                <el-button type="primary" circle :icon="Search" style="width: 40px;height: 40px;font-size: 20px;"
+                    @click="clicksearch">
                 </el-button>
-                <!-- <el-button type="success" round style="width: 120px;display: flex;" @click="visable = true">
-                    <el-icon size="25" style="flex-shrink: 0;">
-                        <CirclePlus />
-                    </el-icon>
-                    <span style="flex: 1; text-align: center; line-height: 1;">添加游戏</span>
-                </el-button> -->
+                <el-popover class="box-item" v-model:visible="sortPopVisible" transition="none" placement="bottom"
+                    trigger="click" :width="160">
+                    <span style="display: inline-flex; align-items: center; gap: 4px;">
+                        <el-icon>
+                            <Menu />
+                        </el-icon>
+                        <span>排序选项</span>
+                    </span>
+                    <el-divider style="margin: 5px 0;" />
+                    <div style="display: flex;flex-direction: column;width: 100%;gap: 5px;">
+                        <el-radio-group v-model="sortField">
+                            <el-radio value="name">名称(A-Z)</el-radio>
+                            <el-radio value="price">价格</el-radio>
+                            <el-radio value="mcRating">MC评分</el-radio>
+                            <el-radio value="releaseDate">发售日期</el-radio>
+                            <el-radio value="addDate">添加日期</el-radio>
+                        </el-radio-group>
+                        <el-radio-group v-model="sortOrder" size="small">
+                            <el-radio-button label="asc">
+                                ↑升序
+                            </el-radio-button>
+                            <el-radio-button label="desc">
+                                ↓降序
+                            </el-radio-button>
+                        </el-radio-group>
+                        <div style="display: flex;margin-top: 5px;">
+                            <el-button size="middle" @click="resetSort">重置</el-button>
+                            <el-button size="middle" type="primary" @click="sortPopVisible = false">确认</el-button>
+                        </div>
+                    </div>
+                    <template #reference>
+                        <el-button type="primary" circle :icon="Sort"
+                            style="width: 40px;height: 40px;font-size: 20px;margin-left: 0;">
+                        </el-button>
+                    </template>
+                </el-popover>
             </div>
             <el-tabs v-model="activeTab" class="custom-tabs">
                 <el-tab-pane label="🕜️待玩" name="notplayed">
@@ -57,7 +77,6 @@
                         <div class="itembox">
                             <span>名称：{{ game.name }}</span> <span>制作商：{{ game.company }} </span>
                             <span><el-rate v-model="value" :texts="['拉完了', '拉', 'NPC', '夯', '夯爆了']" show-text /></span>
-
                         </div>
                     </div>
                 </el-tab-pane>
@@ -66,7 +85,7 @@
                 </el-tab-pane>
                 <el-tab-pane label="👀全部" name="all">
                     <el-collapse v-model="activeNames" accordion class="custom-collapse">
-                        <el-collapse-item v-for="game in filteredgames" :key="game.id" :name="String(game.id)">
+                        <el-collapse-item v-for="game in sortedgames" :key="game.id" :name="String(game.id)">
                             <template #title>
                                 <div class="itembox-content">
                                     <span style="font-size: 26px;">🎯{{ game.name }}</span>
@@ -124,21 +143,38 @@
     </div>
 </template>
 <script setup>
-import { Back, Operation, Picture, CirclePlus, Search, Delete, Edit, Select, Share ,Plus} from '@element-plus/icons-vue'
+import { Back, Operation, Picture, CirclePlus, Search, Delete, Edit, Select, Share, Plus, Sort, Menu, Top, Bottom } from '@element-plus/icons-vue'
 import { computed, onMounted, reactive, ref } from 'vue';
-import axios from 'axios';
 import { ElMessage } from 'element-plus'
+import WallpaperSwitch from '@/components/WallpaperSwitch.vue';
 import 'element-plus/dist/index.css'
 import router from '@/router';
 import { userApi, gameApi } from '@/api'
+const bglist = [
+    require('@/assets/re9.jpg'),
+    require('@/assets/ER.jpg'),
+    require('@/assets/XB2.webp'),
+    require('@/assets/zelda1.jpg'),
+    require('@/assets/FF7.jpg')
+]
+const curbgurl = ref(bglist[Number(localStorage.getItem('bgIndex')) || 0])
 // ========== 新增：用户信息 ==========
 const userInfo = ref({ username: '未登录' });
 const keyword = ref('')
 const inputword = ref('')
-const clicksearch = () => { 
-    keyword.value = inputword.value.trim() 
+const sortField = ref('name')
+const sortOrder = ref('asc')
+const sortPopVisible = ref(false)
+
+const resetSort = () => {
+    sortField.value = 'name'
+    sortOrder.value = 'asc'
+    sortPopVisible.value = false   // 重置完顺便关掉
 }
-const clearkeyword = () =>{keyword.value=""}
+const clicksearch = () => {
+    keyword.value = inputword.value.trim()
+}
+const clearkeyword = () => { keyword.value = "" }
 const fetchUserInfo = async () => {
     try {
         const res = await userApi.getUserInfo();
@@ -175,7 +211,7 @@ const value = ref()
 const handleClick = (tab, event) => {
     console.log(tab, event)
 }
-const visable = ref(false)
+const dialogVisable = ref(false)
 const data = reactive({
     game: { name: "", company: "", platform: "", type: "", date: "" },
     rule: { name: [{ required: true, message: "请填写游戏名称" }] }
@@ -185,48 +221,14 @@ const loginout = () => {
     router.push("/login")
 }
 const gamelist = ref([])
-const bglist = ref([
-    require("@/assets/re9.jpg"),
-    require("@/assets/ER.jpg"),
-    require("@/assets/XB2.webp"),
-    require("@/assets/zelda1.jpg"),
-    require("@/assets/FF7.jpg")
-]);
-const bglistindex = ref(Number(localStorage.getItem('bgIndex')) || 0)
-const curbgurl = ref(bglist.value[bglistindex.value])
-const switchbg = () => {
-    // 1. 计算下一张图片的索引和URL
-    const nextIndex = (bglistindex.value + 1) % bglist.value.length;
-    const nextBgUrl = bglist.value[nextIndex];
-
-    // 2. 创建临时Image对象，监听加载完成事件
-    const tempImg = new Image();
-
-    // 图片加载完成后才更新背景图
-    tempImg.onload = () => {
-        // 更新索引和背景图URL
-        bglistindex.value = nextIndex;
-        curbgurl.value = nextBgUrl;
-        localStorage.setItem('bgIndex', nextIndex);
-        // 加载完成后再提示，避免误导用户
-        ElMessage.success("已切换背景");
-    };
-
-    // 图片加载失败的兜底处理（可选，提升健壮性）
-    tempImg.onerror = () => {
-        ElMessage.error("壁纸加载失败，使用当前壁纸");
-        // 加载失败时不切换，保持当前背景图
-        curbgurl.value = bglist.value[bglistindex.value];
-    };
-
-    // 3. 触发图片加载（如果图片已预加载，onload会立即执行）
-    tempImg.src = nextBgUrl;
-};
-
 onMounted(() => {
     // 获取用户信息
     fetchUserInfo();
 })
+function extractNumber(str) {
+    const match = String(str).match(/(\d+(\.\d+)?)/)
+    return match ? parseFloat(match[1]) : 0
+}
 const filteredgames = computed(() => {
     // ⭐ 如果关键词为空，直接返回全部
     if (!keyword.value) {
@@ -242,11 +244,37 @@ const filteredgames = computed(() => {
         )
     })
 })
+const sortedgames = computed(() => {
+    const list = [...filteredgames.value]
+    const dir = sortOrder.value === 'asc' ? 1 : -1
+    list.sort((a, b) => {
+        let va = a[sortField.value]
+        let vb = b[sortField.value]
+        if (va == null || va == '暂无' || va == '') return 1
+        if (vb == null || vb == '暂无' || vb == '') return -1
+        if (sortField.value === 'name') {
+            return va.localeCompare(vb, 'zh') * dir
+        }
+        if (sortField.value === 'releaseDate' || sortField.value === 'addDate') {
+            const da = new Date(va)
+            const db = new Date(vb)
+            if (isNaN(da)) return 1      // 空/无效日期排最后
+            if (isNaN(db)) return -1
+            return (da - db) * dir
+        }
+        const na = extractNumber(va)
+        const nb = extractNumber(vb)
+        if (isNaN(na)) return 1
+        if (isNaN(nb)) return -1
+        return (na - nb) * dir
+    })
+    return list
+})
 const notplayedgames = computed(() => {
-    return filteredgames.value.filter(game => game.played === 0)
+    return sortedgames.value.filter(game => game.played === 0)
 })
 const playedgames = computed(() => {
-    return filteredgames.value.filter(game => game.played === 1)
+    return sortedgames.value.filter(game => game.played === 1)
 })
 </script>
 <style scoped>
@@ -279,6 +307,8 @@ const playedgames = computed(() => {
     overflow: hidden;
     /* ✅ 防止溢出 */
     position: relative;
+    backdrop-filter: blur(2px);
+    box-shadow: 0, 25px, 25px, rgba(0, 0, 0, 0.25);
 }
 
 .custom-tabs {
@@ -592,7 +622,8 @@ const playedgames = computed(() => {
     box-shadow: 0 0 0 1px #dcdfe6 inset !important;
     transition: all 0.3s ease;
 }
-.plusbutton{
+
+.plusbutton {
     position: absolute;
     width: 70px;
     height: 70px;
@@ -602,23 +633,23 @@ const playedgames = computed(() => {
     color: white;
     border: none;
     /* ===== 绿色基调渐变色 ===== */
-    background: linear-gradient(135deg,  #38ef7d 0%, #00b894 100%);
+    background: linear-gradient(135deg, #38ef7d 0%, #00b894 100%);
     background-size: 200% 200%;
-    
+
     /* ===== 绿色系四周发光 ===== */
-    box-shadow:  
+    box-shadow:
         0 0 20px rgba(56, 239, 125, 0.5),
         0 0 40px rgba(17, 153, 142, 0.3),
         0 0 60px rgba(0, 184, 148, 0.2);
-    
+
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
+
 .plusbutton:hover {
     transform: scale(1.1);
-    box-shadow: 
+    box-shadow:
         0 0 30px rgba(56, 239, 125, 0.7),
         0 0 60px rgba(17, 153, 142, 0.5),
         0 0 90px rgba(0, 184, 148, 0.3);
 }
-
 </style>
