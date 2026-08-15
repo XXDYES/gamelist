@@ -1,7 +1,7 @@
 <template>
     <transition name="skill-fade">
         <div v-show="visible" class="skill-mask" @click="skip">
-            <video ref="videoRef" class="skill-video" autoplay playsinline @canplay="tryPlay" @ended="onEnded"
+            <video ref="videoRef" class="skill-video" playsinline @canplay="tryPlay" @ended="onEnded"
                 :src="videoSrc"></video>
             <!-- <div class="skill-skip-hint">点击任意处跳过</div> -->
         </div>

@@ -9,7 +9,6 @@ public class UserContext {
     }
     public static Integer getCurrentId(){
         return CURRENT_USERID.get();
-
     }
     public static String getCurrentUsername() {
         return CURRENT_USERNAME.get();

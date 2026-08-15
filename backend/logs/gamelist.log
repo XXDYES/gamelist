@@ -1,0 +1,320 @@
+2026-08-15 00:51:56.710 INFO  [http-nio-8081-exec-2] o.example.gamelist.client.impl.DeepSeekClientImpl - AI 返回的原始 content: {"name":"原神","company":"米哈游","platform":"PC/移动端/PS/NS","type":"开放世界","cover":null,"info":"《原神》是由米哈游自研的一款开放世界冒险RPG游戏。玩家将扮演一位名为“旅行者”的神秘角色，在自由的旅行中邂逅性格各异、能力独特的同伴们，一起击败强敌，找回失散的亲人。游戏拥有广袤的提瓦特大陆，包含蒙德、璃月、稻妻、须弥、枫丹等风格迥异的国度，玩家可探索七种元素交织的奇幻世界，利用元素反应进行战斗与解谜。游戏采用持续更新的内容模式，定期推出新角色、新地图与剧情，支持多平台联机，玩家可独自冒险或与好友共同挑战秘境与BOSS。凭借精美的画面、动人的音乐与丰富的文化内涵，《原神》在全球范围内获得了极高人气。","price":"免费","mcRating":"84","releaseDate":"2020-09-28"}
+2026-08-15 00:51:56.763 DEBUG [http-nio-8081-exec-2] org.example.gamelist.util.AiResponseParser - AI 原始返回: {"name":"原神","company":"米哈游","platform":"PC/移动端/PS/NS","type":"开放世界","cover":null,"info":"《原神》是由米哈游自研的一款开放世界冒险RPG游戏。玩家将扮演一位名为“旅行者”的神秘角色，在自由的旅行中邂逅性格各异、能力独特的同伴们，一起击败强敌，找回失散的亲人。游戏拥有广袤的提瓦特大陆，包含蒙德、璃月、稻妻、须弥、枫丹等风格迥异的国度，玩家可探索七种元素交织的奇幻世界，利用元素反应进行战斗与解谜。游戏采用持续更新的内容模式，定期推出新角色、新地图与剧情，支持多平台联机，玩家可独自冒险或与好友共同挑战秘境与BOSS。凭借精美的画面、动人的音乐与丰富的文化内涵，《原神》在全球范围内获得了极高人气。","price":"免费","mcRating":"84","releaseDate":"2020-09-28"}
+2026-08-15 00:52:18.103 INFO  [http-nio-8081-exec-6] o.example.gamelist.client.impl.DeepSeekClientImpl - AI 返回的原始 content: {"name":"原神","company":"米哈游","platform":"PC/移动端/PS","type":"开放世界","cover":null,"info":"《原神》是由米哈游自主研发的开放世界冒险游戏。玩家扮演“旅行者”，在名为“提瓦特”的幻想世界中探索，寻找失散的亲人。游戏拥有七大元素体系，角色搭配丰富，战斗机制多样。开放世界中包含解谜、探索、收集等玩法，画面精美，地形广阔，持续更新版本，提供多语言支持。","price":"免费","mcRating":"84","releaseDate":"2020-09-28"}
+2026-08-15 00:52:18.103 DEBUG [http-nio-8081-exec-6] org.example.gamelist.util.AiResponseParser - AI 原始返回: {"name":"原神","company":"米哈游","platform":"PC/移动端/PS","type":"开放世界","cover":null,"info":"《原神》是由米哈游自主研发的开放世界冒险游戏。玩家扮演“旅行者”，在名为“提瓦特”的幻想世界中探索，寻找失散的亲人。游戏拥有七大元素体系，角色搭配丰富，战斗机制多样。开放世界中包含解谜、探索、收集等玩法，画面精美，地形广阔，持续更新版本，提供多语言支持。","price":"免费","mcRating":"84","releaseDate":"2020-09-28"}
+2026-08-15 00:54:33.288 INFO  [http-nio-8081-exec-3] o.example.gamelist.client.impl.DeepSeekClientImpl - AI 返回的原始 content: {
+  "name": "原神",
+  "company": "米哈游",
+  "platform": "PC/移动端/PS",
+  "type": "开放世界",
+  "cover": null,
+  "info": "《原神》是一款由米哈游开发的开放世界冒险角色扮演游戏。玩家将扮演一位名为“旅行者”的神秘角色，在名为“提瓦特”的幻想世界中自由探索，结识伙伴，挑战强敌，揭示世界真相。游戏采用多元素系统，玩家可灵活切换角色，组合元素反应，实现多样化的战斗策略。世界广阔，包含森林、沙漠、雪山、海岛等多种地貌，并拥有丰富的解谜、任务和收集要素。游戏持续更新，不断推出新区域、角色和活动，为玩家带来长线体验。",
+  "price": "免费",
+  "mcRating": "80",
+  "releaseDate": "2020-09-28"
+}
+2026-08-15 00:54:33.288 DEBUG [http-nio-8081-exec-3] org.example.gamelist.util.AiResponseParser - AI 原始返回: {
+  "name": "原神",
+  "company": "米哈游",
+  "platform": "PC/移动端/PS",
+  "type": "开放世界",
+  "cover": null,
+  "info": "《原神》是一款由米哈游开发的开放世界冒险角色扮演游戏。玩家将扮演一位名为“旅行者”的神秘角色，在名为“提瓦特”的幻想世界中自由探索，结识伙伴，挑战强敌，揭示世界真相。游戏采用多元素系统，玩家可灵活切换角色，组合元素反应，实现多样化的战斗策略。世界广阔，包含森林、沙漠、雪山、海岛等多种地貌，并拥有丰富的解谜、任务和收集要素。游戏持续更新，不断推出新区域、角色和活动，为玩家带来长线体验。",
+  "price": "免费",
+  "mcRating": "80",
+  "releaseDate": "2020-09-28"
+}
+2026-08-15 01:00:46.154 INFO  [http-nio-8081-exec-9] o.example.gamelist.client.impl.DeepSeekClientImpl - AI 返回的原始 content: {"name":"鸣潮","company":"库洛游戏","platform":"PC/移动端/PS","type":"开放世界动作","cover":null,"info":"《鸣潮》是由库洛游戏开发的一款开放世界动作游戏。故事发生在一个被神秘灾难侵袭的末日世界，玩家扮演孤独的漂泊者，在残垣断壁中探索未知的土地，与名为“共鸣者”的伙伴并肩作战。游戏主打高速动作战斗，结合独特的“声骸”系统，让玩家可以捕捉并利用怪物的力量。世界广阔且充满谜团，玩家需要通过战斗、解谜和剧情推进，逐步揭开世界毁灭的真相。游戏画面精美，战斗手感流畅，并支持多平台联机。","price":"免费","mcRating":"暂无","releaseDate":"2024-05-23"}
+2026-08-15 01:00:46.154 DEBUG [http-nio-8081-exec-9] org.example.gamelist.util.AiResponseParser - AI 原始返回: {"name":"鸣潮","company":"库洛游戏","platform":"PC/移动端/PS","type":"开放世界动作","cover":null,"info":"《鸣潮》是由库洛游戏开发的一款开放世界动作游戏。故事发生在一个被神秘灾难侵袭的末日世界，玩家扮演孤独的漂泊者，在残垣断壁中探索未知的土地，与名为“共鸣者”的伙伴并肩作战。游戏主打高速动作战斗，结合独特的“声骸”系统，让玩家可以捕捉并利用怪物的力量。世界广阔且充满谜团，玩家需要通过战斗、解谜和剧情推进，逐步揭开世界毁灭的真相。游戏画面精美，战斗手感流畅，并支持多平台联机。","price":"免费","mcRating":"暂无","releaseDate":"2024-05-23"}
+2026-08-15 10:24:45.869 INFO  [http-nio-8081-exec-7] o.example.gamelist.client.impl.DeepSeekClientImpl - AI 返回的原始 content: {"name":"崩坏3","company":"米哈游","platform":"移动端/PC/PS","type":"ARPG","cover":null,"info":"崩坏3是一款由米哈游开发的3D全视角卡通渲染动作游戏。玩家扮演休伯利安号战舰的舰长，与性格各异的女武神们并肩作战，共同对抗神秘的崩坏灾难。游戏采用即时战斗系统，玩家可操控女武神进行华丽连击，并搭配不同武器和圣痕以应对各种敌人。剧情围绕崩坏与人类的抗争展开，融合了科幻与奇幻元素，拥有丰富的角色养成和多样的玩法模式。游戏还拥有高质量的美术和音乐，为玩家带来沉浸式的动作游戏体验。","price":"免费","mcRating":"暂无","releaseDate":"2016-10-14"}
+2026-08-15 10:24:45.869 DEBUG [http-nio-8081-exec-7] org.example.gamelist.util.AiResponseParser - AI 原始返回: {"name":"崩坏3","company":"米哈游","platform":"移动端/PC/PS","type":"ARPG","cover":null,"info":"崩坏3是一款由米哈游开发的3D全视角卡通渲染动作游戏。玩家扮演休伯利安号战舰的舰长，与性格各异的女武神们并肩作战，共同对抗神秘的崩坏灾难。游戏采用即时战斗系统，玩家可操控女武神进行华丽连击，并搭配不同武器和圣痕以应对各种敌人。剧情围绕崩坏与人类的抗争展开，融合了科幻与奇幻元素，拥有丰富的角色养成和多样的玩法模式。游戏还拥有高质量的美术和音乐，为玩家带来沉浸式的动作游戏体验。","price":"免费","mcRating":"暂无","releaseDate":"2016-10-14"}
+2026-08-15 13:49:52.747 INFO  [http-nio-8081-exec-4] o.example.gamelist.client.impl.DeepSeekClientImpl - AI 返回的原始 content: {"name":"鸣潮","company":"库洛游戏","platform":"PC/移动端/PS","type":"ARPG","cover":null,"info":"鸣潮是由库洛游戏开发的开放世界动作角色扮演游戏。故事发生在未来末世，玩家扮演‘漂泊者’，在广袤的‘奏鸣’世界中探索，与各类‘共鸣者’相遇并并肩作战。游戏采用实时战斗系统，玩家可自由闪避、连招，并利用声骸系统强化能力。剧情围绕人类与‘鸣潮’现象的抗争展开，玩家将逐步揭开世界真相。游戏画面精美，角色设计独特，拥有丰富的野外探索和高自由度玩法。","price":"免费","mcRating":"暂无","releaseDate":"2024-05-23"}
+2026-08-15 13:49:52.755 DEBUG [http-nio-8081-exec-4] org.example.gamelist.util.AiResponseParser - AI 原始返回: {"name":"鸣潮","company":"库洛游戏","platform":"PC/移动端/PS","type":"ARPG","cover":null,"info":"鸣潮是由库洛游戏开发的开放世界动作角色扮演游戏。故事发生在未来末世，玩家扮演‘漂泊者’，在广袤的‘奏鸣’世界中探索，与各类‘共鸣者’相遇并并肩作战。游戏采用实时战斗系统，玩家可自由闪避、连招，并利用声骸系统强化能力。剧情围绕人类与‘鸣潮’现象的抗争展开，玩家将逐步揭开世界真相。游戏画面精美，角色设计独特，拥有丰富的野外探索和高自由度玩法。","price":"免费","mcRating":"暂无","releaseDate":"2024-05-23"}
+2026-08-15 13:51:57.725 INFO  [SpringApplicationShutdownHook] com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closing ...
+2026-08-15 13:51:57.736 INFO  [SpringApplicationShutdownHook] com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closed
+2026-08-15 13:52:01.035 INFO  [main] org.example.gamelist.GameListApplication - Starting GameListApplication using Java 17 with PID 4056 (C:\Users\25109\Desktop\gamelist\backend\target\classes started by 25109 in C:\Users\25109\Desktop\gamelist\backend)
+2026-08-15 13:52:01.035 DEBUG [main] org.example.gamelist.GameListApplication - Running with Spring Boot v3.1.8, Spring v6.0.16
+2026-08-15 13:52:01.035 INFO  [main] org.example.gamelist.GameListApplication - No active profile set, falling back to 1 default profile: "default"
+2026-08-15 13:52:01.780 INFO  [main] o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8081 (http)
+2026-08-15 13:52:01.790 INFO  [main] org.apache.catalina.core.StandardService - Starting service [Tomcat]
+2026-08-15 13:52:01.790 INFO  [main] org.apache.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.18]
+2026-08-15 13:52:01.866 INFO  [main] o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-08-15 13:52:01.866 INFO  [main] o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 793 ms
+2026-08-15 13:52:02.529 INFO  [main] o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat started on port(s): 8081 (http) with context path ''
+2026-08-15 13:52:02.534 INFO  [main] org.example.gamelist.GameListApplication - Started GameListApplication in 1.807 seconds (process running for 2.071)
+2026-08-15 13:52:06.554 INFO  [http-nio-8081-exec-1] o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-08-15 13:52:06.554 INFO  [http-nio-8081-exec-1] org.springframework.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-08-15 13:52:06.555 INFO  [http-nio-8081-exec-1] org.springframework.web.servlet.DispatcherServlet - Completed initialization in 1 ms
+2026-08-15 13:52:06.768 INFO  [http-nio-8081-exec-1] com.alibaba.druid.pool.DruidDataSource - {dataSource-1} inited
+2026-08-15 13:52:27.289 INFO  [http-nio-8081-exec-3] o.example.gamelist.client.impl.DeepSeekClientImpl - AI 返回的原始 content: {"name":"鸣潮","company":"库洛游戏","platform":"PC/移动端/PS","type":"开放世界动作RPG","cover":null,"info":"《鸣潮》是一款由库洛游戏开发的开放世界动作RPG。游戏以华丽的动作战斗为核心，玩家将扮演漂泊者，在广阔的无根之地探索，与各具特色的共鸣者结伴，对抗肆虐的悲鸣怪物，并揭开世界背后的秘密。游戏拥有高度自由的探索系统，通过“声骸”系统赋予角色丰富的能力，配合即时战斗与元素交互，带来酣畅淋漓的体验。视觉上采用二次元风格，场景宏大，剧情围绕文明的毁灭与重生展开，充满悬念。","price":"免费","mcRating":"暂无","releaseDate":"2024-05-23"}
+2026-08-15 13:52:27.291 DEBUG [http-nio-8081-exec-3] org.example.gamelist.util.AiResponseParser - AI 原始返回: {"name":"鸣潮","company":"库洛游戏","platform":"PC/移动端/PS","type":"开放世界动作RPG","cover":null,"info":"《鸣潮》是一款由库洛游戏开发的开放世界动作RPG。游戏以华丽的动作战斗为核心，玩家将扮演漂泊者，在广阔的无根之地探索，与各具特色的共鸣者结伴，对抗肆虐的悲鸣怪物，并揭开世界背后的秘密。游戏拥有高度自由的探索系统，通过“声骸”系统赋予角色丰富的能力，配合即时战斗与元素交互，带来酣畅淋漓的体验。视觉上采用二次元风格，场景宏大，剧情围绕文明的毁灭与重生展开，充满悬念。","price":"免费","mcRating":"暂无","releaseDate":"2024-05-23"}
+2026-08-15 16:30:34.223 INFO  [http-nio-8081-exec-10] o.example.gamelist.client.impl.DeepSeekClientImpl - AI 返回的原始 content: {
+  "name": "神之天平",
+  "company": "KEIZO",
+  "platform": "PC/NS/PS/XBOX",
+  "type": "ARPG",
+  "cover": null,
+  "info": "《神之天平》（ASTLIBRA Revision）是一款由日本开发者KEIZO制作的2D横向卷轴动作角色扮演游戏。玩家将扮演一名少年，在神秘少女的指引下，穿越于奇幻世界，对抗敌人并寻求真相。游戏的核心特色是独特的'天平'系统，玩家可通过战斗获得经验与道具，将其奉献给天平以强化角色能力。游戏拥有丰富的武器、技能和成长路线，搭配多结局的剧情叙事，为玩家提供了极高的自由度。重制版在原有基础上增加了全新篇章、语音演出及大量平衡性优化，是横版ARPG爱好者的绝佳选择。",
+  "price": "￥98",
+  "mcRating": "暂无",
+  "releaseDate": "2022-10-13"
+}
+2026-08-15 16:30:34.226 DEBUG [http-nio-8081-exec-10] org.example.gamelist.util.AiResponseParser - AI 原始返回: {
+  "name": "神之天平",
+  "company": "KEIZO",
+  "platform": "PC/NS/PS/XBOX",
+  "type": "ARPG",
+  "cover": null,
+  "info": "《神之天平》（ASTLIBRA Revision）是一款由日本开发者KEIZO制作的2D横向卷轴动作角色扮演游戏。玩家将扮演一名少年，在神秘少女的指引下，穿越于奇幻世界，对抗敌人并寻求真相。游戏的核心特色是独特的'天平'系统，玩家可通过战斗获得经验与道具，将其奉献给天平以强化角色能力。游戏拥有丰富的武器、技能和成长路线，搭配多结局的剧情叙事，为玩家提供了极高的自由度。重制版在原有基础上增加了全新篇章、语音演出及大量平衡性优化，是横版ARPG爱好者的绝佳选择。",
+  "price": "￥98",
+  "mcRating": "暂无",
+  "releaseDate": "2022-10-13"
+}
+2026-08-15 16:32:34.364 INFO  [http-nio-8081-exec-4] o.example.gamelist.client.impl.DeepSeekClientImpl - AI 返回的原始 content: {"name":"塞尔达传说 王国之泪","company":"任天堂","platform":"NS","type":"动作冒险","cover":null,"info":"《塞尔达传说 王国之泪》是任天堂开发的动作冒险游戏，作为《旷野之息》的续作，玩家将再次扮演林克，在海拉鲁大陆展开新的冒险。本作引入了空岛、地下洞穴等新区域，并加入全新的“余料建造”和“究极手”机制，允许玩家组合武器、载具等物品，创造独特的玩法。游戏剧情围绕“魔王加侬多夫”的复活展开，林克需要借助塞尔达公主的力量和神秘的手臂能力，阻止灾厄的蔓延。画面延续前作的卡通渲染风格，探索自由度极高，战斗系统丰富，解谜元素巧妙，深受玩家好评。","price":"HKD 499","mcRating":"96","releaseDate":"2023-05-12"}
+2026-08-15 16:32:34.364 DEBUG [http-nio-8081-exec-4] org.example.gamelist.util.AiResponseParser - AI 原始返回: {"name":"塞尔达传说 王国之泪","company":"任天堂","platform":"NS","type":"动作冒险","cover":null,"info":"《塞尔达传说 王国之泪》是任天堂开发的动作冒险游戏，作为《旷野之息》的续作，玩家将再次扮演林克，在海拉鲁大陆展开新的冒险。本作引入了空岛、地下洞穴等新区域，并加入全新的“余料建造”和“究极手”机制，允许玩家组合武器、载具等物品，创造独特的玩法。游戏剧情围绕“魔王加侬多夫”的复活展开，林克需要借助塞尔达公主的力量和神秘的手臂能力，阻止灾厄的蔓延。画面延续前作的卡通渲染风格，探索自由度极高，战斗系统丰富，解谜元素巧妙，深受玩家好评。","price":"HKD 499","mcRating":"96","releaseDate":"2023-05-12"}
+2026-08-15 16:35:59.067 INFO  [http-nio-8081-exec-4] o.example.gamelist.client.impl.DeepSeekClientImpl - AI 返回的原始 content: {"name":"神之天平","company":"KEIZO","platform":"PC/NS","type":"ARPG","cover":null,"info":"《神之天平》是由日本开发者KEIZO个人制作的横版动作RPG。游戏讲述少年在命运指引下，为拯救世界而踏上旅途，在时间循环中挑战强敌，逐步揭开真相。其独特的技能成长系统允许玩家自由组合习得的能力，配合流畅的打击感和精致的像素美术，营造出爽快的战斗体验。剧情深刻且包含多结局，并提供了高难度的挑战内容，兼具深度与耐玩性，广受玩家和媒体好评。","price":"¥92","mcRating":"暂无","releaseDate":"2021-12-16"}
+2026-08-15 16:35:59.067 DEBUG [http-nio-8081-exec-4] org.example.gamelist.util.AiResponseParser - AI 原始返回: {"name":"神之天平","company":"KEIZO","platform":"PC/NS","type":"ARPG","cover":null,"info":"《神之天平》是由日本开发者KEIZO个人制作的横版动作RPG。游戏讲述少年在命运指引下，为拯救世界而踏上旅途，在时间循环中挑战强敌，逐步揭开真相。其独特的技能成长系统允许玩家自由组合习得的能力，配合流畅的打击感和精致的像素美术，营造出爽快的战斗体验。剧情深刻且包含多结局，并提供了高难度的挑战内容，兼具深度与耐玩性，广受玩家和媒体好评。","price":"¥92","mcRating":"暂无","releaseDate":"2021-12-16"}
+2026-08-15 16:38:02.305 INFO  [http-nio-8081-exec-9] o.example.gamelist.client.impl.DeepSeekClientImpl - AI 返回的原始 content: {
+  "name": "碧蓝幻想：Relink",
+  "company": "Cygames",
+  "platform": "PS/PC",
+  "type": "ARPG",
+  "cover": null,
+  "info": "《碧蓝幻想：Relink》是Cygames开发的动作角色扮演游戏，玩家将操控主角团在广袤的空之世界中展开冒险。游戏以爽快的动作连击为核心，支持四人联机共斗，玩家可以培养多种角色，体验丰富的剧情故事。独特的战斗系统和精美的画面，为玩家带来沉浸式的冒险体验。",
+  "price": "￥328",
+  "mcRating": "80",
+  "releaseDate": "2024-02-01"
+}
+2026-08-15 16:38:02.305 DEBUG [http-nio-8081-exec-9] org.example.gamelist.util.AiResponseParser - AI 原始返回: {
+  "name": "碧蓝幻想：Relink",
+  "company": "Cygames",
+  "platform": "PS/PC",
+  "type": "ARPG",
+  "cover": null,
+  "info": "《碧蓝幻想：Relink》是Cygames开发的动作角色扮演游戏，玩家将操控主角团在广袤的空之世界中展开冒险。游戏以爽快的动作连击为核心，支持四人联机共斗，玩家可以培养多种角色，体验丰富的剧情故事。独特的战斗系统和精美的画面，为玩家带来沉浸式的冒险体验。",
+  "price": "￥328",
+  "mcRating": "80",
+  "releaseDate": "2024-02-01"
+}
+2026-08-15 16:41:23.402 ERROR [http-nio-8081-exec-2] o.example.gamelist.client.impl.DeepSeekClientImpl - 调用 DeepSeek API 失败
+org.springframework.web.client.ResourceAccessException: I/O error on POST request for "https://api.deepseek.com/chat/completions": Read timed out
+	at org.springframework.web.client.RestTemplate.createResourceAccessException(RestTemplate.java:888)
+	at org.springframework.web.client.RestTemplate.doExecute(RestTemplate.java:868)
+	at org.springframework.web.client.RestTemplate.execute(RestTemplate.java:764)
+	at org.springframework.web.client.RestTemplate.postForObject(RestTemplate.java:481)
+	at org.example.gamelist.client.impl.DeepSeekClientImpl.getGameInfo(DeepSeekClientImpl.java:62)
+	at org.example.gamelist.service.GameService.getGameInfoFromAI(GameService.java:44)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:343)
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:699)
+	at org.example.gamelist.service.GameService$$SpringCGLIB$$0.getGameInfoFromAI(<generated>)
+	at org.example.gamelist.Controller.GameController.getGameInfoFromAI(GameController.java:31)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:205)
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:150)
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:884)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:797)
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1081)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:974)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014)
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:205)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
+	at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:91)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:482)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:340)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:391)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:896)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1744)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+Caused by: java.net.SocketTimeoutException: Read timed out
+	at java.base/sun.nio.ch.NioSocketImpl.timedRead(NioSocketImpl.java:283)
+	at java.base/sun.nio.ch.NioSocketImpl.implRead(NioSocketImpl.java:309)
+	at java.base/sun.nio.ch.NioSocketImpl.read(NioSocketImpl.java:350)
+	at java.base/sun.nio.ch.NioSocketImpl$1.read(NioSocketImpl.java:803)
+	at java.base/java.net.Socket$SocketInputStream.read(Socket.java:966)
+	at java.base/sun.security.ssl.SSLSocketInputRecord.read(SSLSocketInputRecord.java:478)
+	at java.base/sun.security.ssl.SSLSocketInputRecord.readHeader(SSLSocketInputRecord.java:472)
+	at java.base/sun.security.ssl.SSLSocketInputRecord.bytesInCompletePacket(SSLSocketInputRecord.java:70)
+	at java.base/sun.security.ssl.SSLSocketImpl.readApplicationRecord(SSLSocketImpl.java:1455)
+	at java.base/sun.security.ssl.SSLSocketImpl$AppInputStream.read(SSLSocketImpl.java:1059)
+	at java.base/java.io.BufferedInputStream.fill(BufferedInputStream.java:244)
+	at java.base/java.io.BufferedInputStream.read1(BufferedInputStream.java:284)
+	at java.base/java.io.BufferedInputStream.read(BufferedInputStream.java:343)
+	at java.base/sun.net.www.http.ChunkedInputStream.readAheadBlocking(ChunkedInputStream.java:554)
+	at java.base/sun.net.www.http.ChunkedInputStream.readAhead(ChunkedInputStream.java:611)
+	at java.base/sun.net.www.http.ChunkedInputStream.read(ChunkedInputStream.java:705)
+	at java.base/java.io.FilterInputStream.read(FilterInputStream.java:132)
+	at java.base/sun.net.www.protocol.http.HttpURLConnection$HttpInputStream.read(HttpURLConnection.java:3663)
+	at java.base/sun.net.www.protocol.http.HttpURLConnection$HttpInputStream.read(HttpURLConnection.java:3656)
+	at java.base/sun.net.www.protocol.http.HttpURLConnection$HttpInputStream.read(HttpURLConnection.java:3644)
+	at java.base/java.io.FilterInputStream.read(FilterInputStream.java:82)
+	at java.base/java.io.PushbackInputStream.read(PushbackInputStream.java:135)
+	at org.springframework.web.client.IntrospectingClientHttpResponse.hasEmptyMessageBody(IntrospectingClientHttpResponse.java:100)
+	at org.springframework.web.client.HttpMessageConverterExtractor.extractData(HttpMessageConverterExtractor.java:90)
+	at org.springframework.web.client.RestTemplate.doExecute(RestTemplate.java:865)
+	... 66 common frames omitted
+2026-08-15 16:41:56.695 ERROR [http-nio-8081-exec-7] o.example.gamelist.client.impl.DeepSeekClientImpl - 调用 DeepSeek API 失败
+org.springframework.web.client.ResourceAccessException: I/O error on POST request for "https://api.deepseek.com/chat/completions": Read timed out
+	at org.springframework.web.client.RestTemplate.createResourceAccessException(RestTemplate.java:888)
+	at org.springframework.web.client.RestTemplate.doExecute(RestTemplate.java:868)
+	at org.springframework.web.client.RestTemplate.execute(RestTemplate.java:764)
+	at org.springframework.web.client.RestTemplate.postForObject(RestTemplate.java:481)
+	at org.example.gamelist.client.impl.DeepSeekClientImpl.getGameInfo(DeepSeekClientImpl.java:62)
+	at org.example.gamelist.service.GameService.getGameInfoFromAI(GameService.java:44)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:343)
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:699)
+	at org.example.gamelist.service.GameService$$SpringCGLIB$$0.getGameInfoFromAI(<generated>)
+	at org.example.gamelist.Controller.GameController.getGameInfoFromAI(GameController.java:31)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:205)
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:150)
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:884)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:797)
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1081)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:974)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014)
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:205)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
+	at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:91)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:482)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:340)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:391)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:896)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1744)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+Caused by: java.net.SocketTimeoutException: Read timed out
+	at java.base/sun.nio.ch.NioSocketImpl.timedRead(NioSocketImpl.java:283)
+	at java.base/sun.nio.ch.NioSocketImpl.implRead(NioSocketImpl.java:309)
+	at java.base/sun.nio.ch.NioSocketImpl.read(NioSocketImpl.java:350)
+	at java.base/sun.nio.ch.NioSocketImpl$1.read(NioSocketImpl.java:803)
+	at java.base/java.net.Socket$SocketInputStream.read(Socket.java:966)
+	at java.base/sun.security.ssl.SSLSocketInputRecord.read(SSLSocketInputRecord.java:478)
+	at java.base/sun.security.ssl.SSLSocketInputRecord.readHeader(SSLSocketInputRecord.java:472)
+	at java.base/sun.security.ssl.SSLSocketInputRecord.bytesInCompletePacket(SSLSocketInputRecord.java:70)
+	at java.base/sun.security.ssl.SSLSocketImpl.readApplicationRecord(SSLSocketImpl.java:1455)
+	at java.base/sun.security.ssl.SSLSocketImpl$AppInputStream.read(SSLSocketImpl.java:1059)
+	at java.base/java.io.BufferedInputStream.fill(BufferedInputStream.java:244)
+	at java.base/java.io.BufferedInputStream.read1(BufferedInputStream.java:284)
+	at java.base/java.io.BufferedInputStream.read(BufferedInputStream.java:343)
+	at java.base/sun.net.www.http.ChunkedInputStream.readAheadBlocking(ChunkedInputStream.java:554)
+	at java.base/sun.net.www.http.ChunkedInputStream.readAhead(ChunkedInputStream.java:611)
+	at java.base/sun.net.www.http.ChunkedInputStream.read(ChunkedInputStream.java:705)
+	at java.base/java.io.FilterInputStream.read(FilterInputStream.java:132)
+	at java.base/sun.net.www.protocol.http.HttpURLConnection$HttpInputStream.read(HttpURLConnection.java:3663)
+	at java.base/sun.net.www.protocol.http.HttpURLConnection$HttpInputStream.read(HttpURLConnection.java:3656)
+	at java.base/sun.net.www.protocol.http.HttpURLConnection$HttpInputStream.read(HttpURLConnection.java:3644)
+	at java.base/java.io.FilterInputStream.read(FilterInputStream.java:82)
+	at java.base/java.io.PushbackInputStream.read(PushbackInputStream.java:135)
+	at org.springframework.web.client.IntrospectingClientHttpResponse.hasEmptyMessageBody(IntrospectingClientHttpResponse.java:100)
+	at org.springframework.web.client.HttpMessageConverterExtractor.extractData(HttpMessageConverterExtractor.java:90)
+	at org.springframework.web.client.RestTemplate.doExecute(RestTemplate.java:865)
+	... 66 common frames omitted
+2026-08-15 16:42:11.738 INFO  [http-nio-8081-exec-9] o.example.gamelist.client.impl.DeepSeekClientImpl - AI 返回的原始 content: {"name":"原神","company":"米哈游","platform":"PC/移动端/PS","type":"开放世界","cover":null,"info":"《原神》是由米哈游自主研发的开放世界冒险游戏。玩家将扮演一位名为“旅行者”的神秘角色，在自由的旅行中邂逅性格各异、能力独特的同伴们，一起探索提瓦特大陆的七大元素国度，解开世界谜团。游戏采用基于元素反应的角色战斗系统，拥有丰富的剧情和探索内容，并支持多人联机合作。游戏内包含众多角色、武器和圣遗物等养成要素，持续更新版本带来新区域与活动。其精美的画面和音乐广受好评，并融合了多国文化元素，为玩家呈现一个宏大而充满奇幻色彩的世界。","price":"免费","mcRating":"暂无","releaseDate":"2020-09-28"}
+2026-08-15 16:42:11.738 DEBUG [http-nio-8081-exec-9] org.example.gamelist.util.AiResponseParser - AI 原始返回: {"name":"原神","company":"米哈游","platform":"PC/移动端/PS","type":"开放世界","cover":null,"info":"《原神》是由米哈游自主研发的开放世界冒险游戏。玩家将扮演一位名为“旅行者”的神秘角色，在自由的旅行中邂逅性格各异、能力独特的同伴们，一起探索提瓦特大陆的七大元素国度，解开世界谜团。游戏采用基于元素反应的角色战斗系统，拥有丰富的剧情和探索内容，并支持多人联机合作。游戏内包含众多角色、武器和圣遗物等养成要素，持续更新版本带来新区域与活动。其精美的画面和音乐广受好评，并融合了多国文化元素，为玩家呈现一个宏大而充满奇幻色彩的世界。","price":"免费","mcRating":"暂无","releaseDate":"2020-09-28"}
+2026-08-15 16:43:55.993 INFO  [http-nio-8081-exec-5] o.example.gamelist.client.impl.DeepSeekClientImpl - AI 返回的原始 content: {"name":"燕云十六声","company":"网易","platform":"PC/移动端","type":"开放世界","cover":null,"info":"燕云十六声是一款设定在五代十国时期的开放世界武侠游戏，玩家将扮演一名无名侠客，在纷乱的历史洪流中探索江湖。游戏摒弃了传统任务指引，鼓励自由探索与决策，剧情走向由玩家选择。战斗融合了真实武术与动作元素，招式多样，强调策略与技巧。游戏还包含丰富的支线任务与生活系统，营造出活生生的武侠世界。技术上采用先进引擎，展现细腻的画面与动态天气。","price":"免费","mcRating":"暂无","releaseDate":"暂无"}
+2026-08-15 16:43:55.993 DEBUG [http-nio-8081-exec-5] org.example.gamelist.util.AiResponseParser - AI 原始返回: {"name":"燕云十六声","company":"网易","platform":"PC/移动端","type":"开放世界","cover":null,"info":"燕云十六声是一款设定在五代十国时期的开放世界武侠游戏，玩家将扮演一名无名侠客，在纷乱的历史洪流中探索江湖。游戏摒弃了传统任务指引，鼓励自由探索与决策，剧情走向由玩家选择。战斗融合了真实武术与动作元素，招式多样，强调策略与技巧。游戏还包含丰富的支线任务与生活系统，营造出活生生的武侠世界。技术上采用先进引擎，展现细腻的画面与动态天气。","price":"免费","mcRating":"暂无","releaseDate":"暂无"}
+2026-08-15 16:44:23.128 INFO  [http-nio-8081-exec-4] o.example.gamelist.client.impl.DeepSeekClientImpl - AI 返回的原始 content: {"name":"燕云十六声","company":"网易","platform":"PC/移动端","type":"开放世界武侠","cover":null,"info":"《燕云十六声》是网易打造的开放世界武侠游戏，以五代十国为背景，玩家将扮演一位无名侠客，在乱世中闯荡江湖。游戏注重武术招式的真实感和自由探索，支持玩家在无缝地图中奔跑、攀爬、飞行，并与各路高手切磋武艺。剧情丰富，玩家可做出影响走向的选择，同时支持多人合作与对抗。整体营造出一个充满烟火气的古代江湖世界。","price":"￥98","mcRating":"暂无","releaseDate":"2024-12-27"}
+2026-08-15 16:44:23.128 DEBUG [http-nio-8081-exec-4] org.example.gamelist.util.AiResponseParser - AI 原始返回: {"name":"燕云十六声","company":"网易","platform":"PC/移动端","type":"开放世界武侠","cover":null,"info":"《燕云十六声》是网易打造的开放世界武侠游戏，以五代十国为背景，玩家将扮演一位无名侠客，在乱世中闯荡江湖。游戏注重武术招式的真实感和自由探索，支持玩家在无缝地图中奔跑、攀爬、飞行，并与各路高手切磋武艺。剧情丰富，玩家可做出影响走向的选择，同时支持多人合作与对抗。整体营造出一个充满烟火气的古代江湖世界。","price":"￥98","mcRating":"暂无","releaseDate":"2024-12-27"}
+2026-08-15 16:44:41.145 INFO  [http-nio-8081-exec-2] o.example.gamelist.client.impl.DeepSeekClientImpl - AI 返回的原始 content: {"name":"燕云十六声","company":"网易游戏","platform":"PC/移动端","type":"开放世界/动作角色扮演","cover":null,"info":"《燕云十六声》是网易游戏开发的一款开放世界武侠游戏，以五代十国为背景。玩家扮演江湖游侠，在乱世中探索广袤世界，体验自由战斗、轻功飞行和多样生活玩法。游戏采用实时动作系统，可学习多种武学并组合连招，任务剧情丰富，选择影响结局。同时包含家园、烹饪、钓鱼等休闲内容，支持单人模式与多人联机，画面精美，营造出浓郁的历史江湖氛围。","price":"免费","mcRating":"暂无","releaseDate":"2024-12-27"}
+2026-08-15 16:44:41.145 DEBUG [http-nio-8081-exec-2] org.example.gamelist.util.AiResponseParser - AI 原始返回: {"name":"燕云十六声","company":"网易游戏","platform":"PC/移动端","type":"开放世界/动作角色扮演","cover":null,"info":"《燕云十六声》是网易游戏开发的一款开放世界武侠游戏，以五代十国为背景。玩家扮演江湖游侠，在乱世中探索广袤世界，体验自由战斗、轻功飞行和多样生活玩法。游戏采用实时动作系统，可学习多种武学并组合连招，任务剧情丰富，选择影响结局。同时包含家园、烹饪、钓鱼等休闲内容，支持单人模式与多人联机，画面精美，营造出浓郁的历史江湖氛围。","price":"免费","mcRating":"暂无","releaseDate":"2024-12-27"}
+2026-08-15 16:47:26.412 INFO  [SpringApplicationShutdownHook] com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closing ...
+2026-08-15 16:47:26.412 INFO  [SpringApplicationShutdownHook] com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closed
+2026-08-15 16:47:29.104 INFO  [main] org.example.gamelist.GameListApplication - Starting GameListApplication using Java 17 with PID 30724 (C:\Users\25109\Desktop\gamelist\backend\target\classes started by 25109 in C:\Users\25109\Desktop\gamelist\backend)
+2026-08-15 16:47:29.104 DEBUG [main] org.example.gamelist.GameListApplication - Running with Spring Boot v3.1.8, Spring v6.0.16
+2026-08-15 16:47:29.104 INFO  [main] org.example.gamelist.GameListApplication - No active profile set, falling back to 1 default profile: "default"
+2026-08-15 16:47:29.816 INFO  [main] o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8081 (http)
+2026-08-15 16:47:29.824 INFO  [main] org.apache.catalina.core.StandardService - Starting service [Tomcat]
+2026-08-15 16:47:29.824 INFO  [main] org.apache.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.18]
+2026-08-15 16:47:29.895 INFO  [main] o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-08-15 16:47:29.895 INFO  [main] o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 753 ms
+2026-08-15 16:47:30.538 INFO  [main] o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat started on port(s): 8081 (http) with context path ''
+2026-08-15 16:47:30.548 INFO  [main] org.example.gamelist.GameListApplication - Started GameListApplication in 1.741 seconds (process running for 2.002)
+2026-08-15 16:47:35.067 INFO  [http-nio-8081-exec-1] o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-08-15 16:47:35.067 INFO  [http-nio-8081-exec-1] org.springframework.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-08-15 16:47:35.070 INFO  [http-nio-8081-exec-1] org.springframework.web.servlet.DispatcherServlet - Completed initialization in 3 ms
+2026-08-15 16:47:39.461 INFO  [http-nio-8081-exec-1] o.example.gamelist.client.impl.DeepSeekClientImpl - AI 返回的原始 content: {"name":"燕云十六声","company":"网易游戏","platform":"PC/移动端","type":"开放世界","cover":null,"info":"《燕云十六声》是一款以五代十国时期为背景的开放世界武侠游戏。玩家将扮演一名游历乱世的侠客，在广袤的燕云地区自由探索，体验江湖恩怨、家国情怀与历史交织的沉浸式剧情。游戏强调高度自由的玩法，支持轻功攀爬、潜入、战斗、烹饪、钓鱼等多种互动方式，并融入大量中国传统文化元素。玩家可通过修炼武学、结交侠客、参与势力争斗，影响世界走向。画面精美，风格写实，营造出苍凉而壮阔的古代中原风貌。","price":"暂无","mcRating":"暂无","releaseDate":"暂无"}
+2026-08-15 16:47:39.462 DEBUG [http-nio-8081-exec-1] org.example.gamelist.util.AiResponseParser - AI 原始返回: {"name":"燕云十六声","company":"网易游戏","platform":"PC/移动端","type":"开放世界","cover":null,"info":"《燕云十六声》是一款以五代十国时期为背景的开放世界武侠游戏。玩家将扮演一名游历乱世的侠客，在广袤的燕云地区自由探索，体验江湖恩怨、家国情怀与历史交织的沉浸式剧情。游戏强调高度自由的玩法，支持轻功攀爬、潜入、战斗、烹饪、钓鱼等多种互动方式，并融入大量中国传统文化元素。玩家可通过修炼武学、结交侠客、参与势力争斗，影响世界走向。画面精美，风格写实，营造出苍凉而壮阔的古代中原风貌。","price":"暂无","mcRating":"暂无","releaseDate":"暂无"}
+2026-08-15 16:47:48.765 INFO  [http-nio-8081-exec-4] o.example.gamelist.client.impl.DeepSeekClientImpl - AI 返回的原始 content: {"name":"燕云十六声","company":"网易","platform":"PC/移动端","type":"开放世界","cover":null,"info":"《燕云十六声》是一款由网易Everstone工作室开发的开放世界武侠游戏。游戏以五代十国为背景，玩家将扮演一名无名侠客，在乱世中探索江湖，体验充满沉浸感的武侠世界。游戏融合了硬核战斗、自由探索、武侠剧情等元素，支持单人与多人模式，并注重真实物理与交互细节。玩家可以在广阔的地图上自由行动，学习武学、结交同伴、参与势力争斗，还可在开放世界中体验非线性的任务与事件。游戏画面精美，风格写实，致力于还原东方武侠韵味，为玩家呈现一个鲜活而生动的燕云江湖。","price":"免费","mcRating":"暂无","releaseDate":"2024-12-27"}
+2026-08-15 16:47:48.765 DEBUG [http-nio-8081-exec-4] org.example.gamelist.util.AiResponseParser - AI 原始返回: {"name":"燕云十六声","company":"网易","platform":"PC/移动端","type":"开放世界","cover":null,"info":"《燕云十六声》是一款由网易Everstone工作室开发的开放世界武侠游戏。游戏以五代十国为背景，玩家将扮演一名无名侠客，在乱世中探索江湖，体验充满沉浸感的武侠世界。游戏融合了硬核战斗、自由探索、武侠剧情等元素，支持单人与多人模式，并注重真实物理与交互细节。玩家可以在广阔的地图上自由行动，学习武学、结交同伴、参与势力争斗，还可在开放世界中体验非线性的任务与事件。游戏画面精美，风格写实，致力于还原东方武侠韵味，为玩家呈现一个鲜活而生动的燕云江湖。","price":"免费","mcRating":"暂无","releaseDate":"2024-12-27"}
+2026-08-15 16:56:43.959 INFO  [SpringApplicationShutdownHook] com.alibaba.druid.pool.DruidDataSource - {dataSource-0} closing ...

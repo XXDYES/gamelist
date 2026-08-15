@@ -3,9 +3,18 @@ import org.example.gamelist.common.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.example.gamelist.common.UserContext;
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+@Component
 public class JwtInterceptor implements HandlerInterceptor {
+
+    private final JwtUtil jwtUtil;
+
+    public JwtInterceptor(JwtUtil jwtUtil) {
+        this.jwtUtil = jwtUtil;
+    }
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
     throws Exception{
@@ -22,15 +31,15 @@ public class JwtInterceptor implements HandlerInterceptor {
         // 2. 提取 Token（去掉 "Bearer " 前缀）
         String token = authHeader.substring(7);
         // 3. 校验 Token
-        if (!JwtUtil.validateToken(token)) {
+        if (!jwtUtil.validateToken(token)) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.setContentType("application/json;charset=UTF-8");
             response.getWriter().write("{\"code\":401,\"msg\":\"Token无效或已过期\"}");
             return false;
         }
         // 4. 解析 Token，获取用户信息
-        Integer userId = JwtUtil.getUserIdFromToken(token);
-        String username = JwtUtil.getUsernameFromToken(token);
+        Integer userId = jwtUtil.getUserIdFromToken(token);
+        String username = jwtUtil.getUsernameFromToken(token);
 
         // 5. 将用户信息存入当前线程上下文
         UserContext.setCurrentUser(userId, username);

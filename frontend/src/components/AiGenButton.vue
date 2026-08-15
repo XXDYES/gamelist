@@ -1,10 +1,15 @@
 <template>
     <div>
-        <el-button class="ai-button">AI</el-button>
+        <el-button class="ai-button" :loading="loading" :disabled="loading" @click="emit('click')">
+            <span v-if="!loading">AI</span>
+        </el-button>
     </div>
 </template>
 <script setup>
-
+const props = defineProps({
+    loading:{type: Boolean,default:false}
+})
+const emit = defineEmits(['click'])
 </script>
 <style scoped>
 .ai-button{
@@ -45,6 +50,11 @@
         0 0 32px rgba(138, 92, 255, 0.55),
         0 0 48px rgba(0, 224, 138, 0.4),
         inset 0 0 10px rgba(255, 255, 255, 0.18);
+}
+
+/* loading 时隐藏 el-button 内部的空 span，避免 6px 边距导致图标不居中 */
+.ai-button.is-loading :deep(span) {
+    display: none;
 }
 
 /* 渐变流动：来回平滑流动 */

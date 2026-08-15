@@ -4,7 +4,7 @@ import { ElMessage } from "element-plus";
 
 const request = axios.create({
     baseURL: 'http://localhost:8081',
-    timeout: 10000,
+    timeout: 25000,
     withCredentials: true,
 })
 // 请求拦截器：自动携带Token

@@ -18,15 +18,8 @@ public class Game {
     private String platform;
     private String type;
     private String cover;
-    private Integer played;
-    private Integer rating;
     private String info;
     private String price;
-    private Integer user_id;
-    private Integer game_id;
-    private Date add_date;
-    @TableField("mc_rating")
-    private String mc_rating;
-    @TableField("release_date")
-    private String release_date;
+    private String mcRating;
+    private String releaseDate;
 }

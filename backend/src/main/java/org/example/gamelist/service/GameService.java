@@ -2,18 +2,26 @@ package org.example.gamelist.service;
 
 import jakarta.annotation.Resource;
 import org.example.gamelist.client.AiClient;
+import org.example.gamelist.common.UserContext;
 import org.example.gamelist.dto.GameInfoDTO;
+import org.example.gamelist.entity.Game;
+import org.example.gamelist.entity.GameUser;
 import org.example.gamelist.exception.BusinessException;
 import org.example.gamelist.mapper.GameMapper;
+import org.example.gamelist.mapper.GameUserMapper;
 import org.example.gamelist.vo.GameVO;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
 public class GameService {
     @Resource
     private GameMapper gameMapper;
+    @Resource
+    private GameUserMapper gameUserMapper;
     @Resource
     private AiClient aiClient;  // ← 新增：注入 AI 客户端
     public List<GameVO> getGameList(Integer userId){
@@ -34,6 +42,17 @@ public class GameService {
         }
         // 调用 AI 客户端
         return aiClient.getGameInfo(gameName.trim());
+    }
+    @Transactional
+    public void addGame(Game game){
+        gameMapper.insert(game);
+        GameUser gameUser = new GameUser();
+        gameUser.setUserId(UserContext.getCurrentId());
+        gameUser.setGameId(game.getId());
+        gameUser.setPlayed(0);
+        gameUser.setRating(0);
+        gameUser.setAddDate(LocalDate.now());
+        gameUserMapper.insert(gameUser);
     }
 }
 

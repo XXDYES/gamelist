@@ -20,6 +20,6 @@ public class GameInfoDTO {
     private String cover;
     private String info;
     private String price;
-    private String mc_rating;
-    private String release_date;
+    private String mcRating;
+    private String releaseDate;
 }

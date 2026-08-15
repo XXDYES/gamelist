@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     @Resource
     private LoginService loginService;
+    @Resource
+    private JwtUtil jwtUtil;
+
     @RequestMapping(value = "/login", method = {RequestMethod.POST, RequestMethod.GET})
         public Result<String> login(@RequestBody User user){
         try {
@@ -20,7 +23,7 @@ public class UserController {
             User dbUser = loginService.login(user);
 
             // 2. 生成 JWT Token
-            String token = JwtUtil.generateToken(dbUser);
+            String token = jwtUtil.generateToken(dbUser);
 
             // 3. 返回 Token（String 类型）
             return Result.success(token);  // ✅ Result<String>
