@@ -1,0 +1,15 @@
+# 编译产物
+target/
+node_modules/
+dist/
+
+# Codex 自动备份目录
+.codex_backup_*/
+
+# 日志文件
+logs/
+*.log
+*.gz
+
+# Windows 系统文件
+desktop.ini
