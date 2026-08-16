@@ -1,0 +1,330 @@
+<template>
+    <el-collapse v-model="activeNames" accordion class="custom-collapse">
+        <el-collapse-item v-for="game in games" :key="game.id" :name="String(game.id)">
+            <template #title>
+                <div class="itembox-content">
+                    <span style="font-size: 26px;">🎯{{ game.name }}</span>
+                    <span class="game-tag">🏢:{{ game.company }}</span>
+                    <span class="game-tag">🖥️:{{ game.platform }}</span>
+                    <span class="game-tag">🕹️:{{ game.type }}</span>
+                </div>
+                <div @click.stop>
+                    <el-popover trigger="click" placement="left" :width="100" popper-class="status-popover">
+                        <el-radio-group v-model="playStatus"
+                            style="display: flex; flex-direction: column; align-items: flex-start; gap: 5px;">
+                            <el-radio :value="0">🕜️待玩</el-radio>
+                            <el-radio :value="1">✅️已玩</el-radio>
+                            <el-radio :value="2">❌️弃坑</el-radio>
+                        </el-radio-group>
+                        <div style="display: flex; justify-content: center; margin: 10px 0;">
+                            <el-button type="primary" @click="confirmStatus(game)">确认</el-button>
+                        </div>
+                        <template #reference>
+                            <el-button type="success" :icon="Select" circle style="width: 40px; height: 40px; font-size: 20px;margin-left: 6px;
+                                pointer-events: auto !important;" @click="playStatus = game.played"></el-button>
+                        </template>
+                    </el-popover>
+                    <el-tooltip class="box-item" effect="dark" content="编辑信息" placement="top">
+                        <el-button type="primary" :icon="Edit" circle style="width: 40px; height: 40px; font-size: 20px;margin-left: 6px;
+                            pointer-events: auto !important;"></el-button>
+                    </el-tooltip>
+                    <el-tooltip class="box-item" effect="dark" content="分享信息" placement="top">
+                        <el-button type="warning" :icon="Share" circle style="width: 40px; height: 40px; font-size: 20px;margin-left: 6px;
+                            pointer-events: auto !important;"></el-button>
+                    </el-tooltip>
+                    <el-tooltip class="box-item" effect="dark" content="删除信息" placement="top">
+                        <el-button type="danger" :icon="Delete" circle style="width: 40px; height: 40px; font-size: 20px;margin-left: 6px;
+                            pointer-events: auto !important;" @click="deleteDialog=true;deleteTarget=game"></el-button>
+                    </el-tooltip>
+                </div>
+            </template>
+            <div style="display: flex;gap: 10px;">
+                <span class="game-tag">💰:{{ game.price }}</span>
+                <span class="game-tag">MC评分:{{ game.mcRating }}</span>
+                <span class="game-tag">📅发售日期:{{ game.releaseDate }}</span>
+                <span class="game-tag">📅添加日期:{{ game.addDate }}</span>
+            </div>
+            <div class="divider-label">📖 游戏介绍</div>
+            <div style="text-align: left;text-indent: 2em;">
+                <div style="text-indent: 2em;">{{ game.info }}</div>
+            </div>
+            <div class="divider-label">💬 游戏评价</div>
+        </el-collapse-item>
+    </el-collapse>
+    <el-dialog v-model="deleteDialog" class="delete-dialog" width="420" align-center append-to-body center>
+        <template #header>
+            <span class="delete-dialog-title">🗑️ 确认删除游戏</span>
+        </template>
+        <div class="delete-dialog-body">
+            <div class="delete-dialog-icon">⚠️</div>
+            <div class="delete-dialog-msg">
+                <p class="delete-dialog-name">🎯 {{ deleteTarget?.name }}</p>
+                <p class="delete-dialog-hint">删除后不可撤回，只能重新添加</p>
+            </div>
+        </div>
+        <template #footer>
+            <div class="dialog-footer">
+                <el-button class="delete-cancel-btn" @click="deleteDialog=false">取消</el-button>
+                <el-button class="delete-confirm-btn" @click="deleteGame(deleteTarget)">确认删除</el-button>
+            </div>
+        </template>
+    </el-dialog>
+</template>
+
+<script setup>
+import { ref } from 'vue'
+import { Select, Edit, Share, Delete } from '@element-plus/icons-vue'
+import { gameApi } from '@/api'
+import { ElMessage } from 'element-plus'
+
+defineProps({
+    games: { type: Array, default: () => [] }
+})
+const emit = defineEmits(['change-status','delete'])
+
+const activeNames = ref('')
+const playStatus = ref(0)
+const deleteDialog = ref(false)
+const deleteTarget = ref(null)
+const confirmStatus = (game) => {
+    emit('change-status', { game, played: playStatus.value })
+}
+const deleteGame = async(game) => {
+    try{
+        const res = await gameApi.deleteGame(game.id)
+        if(res.data.code == "200"){
+            ElMessage.success("删除成功")
+            emit('delete')
+            deleteDialog.value = false
+        }else{ElMessage.error(res.data.msg)}
+    }catch(error){ElMessage.error("删除失败")}
+
+}
+</script>
+
+<style scoped>
+.custom-collapse {
+    --el-collapse-border-color: transparent;
+    --el-collapse-header-bg-color: transparent;
+    --el-collapse-content-bg-color: transparent;
+    border: none;
+}
+
+.custom-collapse :deep(.el-collapse-item) {
+    width: 98%;
+    background-color: rgba(231, 231, 231, 0.8);
+    border-radius: 30px;
+    padding: 8px 20px;
+    margin: 0 auto 10px;
+    font-size: 20px;
+    line-height: 1;
+    transition: all 0.25s ease;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.custom-collapse :deep(.el-collapse-item:not(.is-active):hover) {
+    transform: translateY(-2.5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    background-color: rgba(245, 245, 245, 0.9);
+}
+
+.custom-collapse :deep(.el-collapse-item__header) {
+    padding: 0 !important;
+    background: transparent !important;
+    border: none !important;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 20px;
+    line-height: 1;
+    min-height: auto;
+    cursor: default !important;
+    pointer-events: none !important;
+}
+
+.custom-collapse :deep(.el-collapse-item__title) {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    padding: 0;
+    background: transparent;
+}
+
+.custom-collapse :deep(.el-collapse-item__title .itembox-content) {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+    width: 100%;
+}
+
+.custom-collapse :deep(.el-collapse-item__arrow) {
+    margin-left: auto;
+    font-size: 18px;
+    color: #666;
+    transition: transform 0.3s ease;
+    flex-shrink: 0;
+    pointer-events: auto !important;
+    cursor: pointer !important;
+}
+
+.custom-collapse :deep(.el-collapse-item__header.is-active .el-collapse-item__arrow) {
+    transform: rotate(90deg);
+}
+
+.custom-collapse :deep(.el-collapse-item__content) {
+    padding: 8px 0 0 0;
+    background: transparent;
+    color: #333;
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+.divider-label {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-weight: 600;
+    color: #333;
+    font-size: 20px;
+    margin: 0;
+}
+
+.divider-label::after {
+    content: '';
+    flex: 1;
+    height: 2.5px;
+    background: rgba(0, 0, 0, 0.18);
+    border-radius: 4px;
+}
+
+.game-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 5px 10px;
+    border-radius: 14px;
+    font-size: 18px;
+    font-weight: 500;
+    color: #4eafff;
+    background: rgba(64, 158, 255, 0.12);
+    white-space: nowrap;
+}
+</style>
+
+<style>
+/* 状态切换弹层：放开组件库的最小宽度限制 */
+.status-popover {
+    min-width: 0 !important;
+}
+</style>
+
+<style>
+/* ===== 删除确认弹窗美化 ===== */
+.delete-dialog {
+    --el-dialog-bg-color: rgba(20, 24, 40, 0.92);
+    backdrop-filter: blur(14px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.55);
+    /* 让顶部光带被圆角裁剪，贴住面板边缘 */
+    overflow: hidden;
+}
+
+/* 顶部渐变光带 */
+.delete-dialog::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #ff6b6b, #ff8e53, #ff5c8a);
+    z-index: 1;
+}
+
+/* 渐变标题 */
+.delete-dialog-title {
+    background: linear-gradient(120deg, #ff6b6b, #ff8e53, #ff5c8a);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-weight: 700;
+    font-size: 18px;
+}
+
+.delete-dialog .el-dialog__header {
+    padding: 18px 20px 6px;
+}
+
+.delete-dialog .el-dialog__headerbtn .el-icon {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* 弹窗主体 */
+.delete-dialog-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 20px 6px;
+    color: rgba(255, 255, 255, 0.9);
+    text-align: center;
+}
+
+.delete-dialog-icon {
+    font-size: 44px;
+    line-height: 1;
+    filter: drop-shadow(0 4px 12px rgba(255, 107, 107, 0.45));
+}
+
+.delete-dialog-msg p {
+    margin: 4px 0;
+}
+
+.delete-dialog-name {
+    font-size: 17px;
+    font-weight: 600;
+    color: #fff;
+}
+
+.delete-dialog-hint {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.55);
+}
+
+.delete-dialog .el-dialog__footer {
+    padding: 8px 20px 20px;
+}
+
+/* 取消按钮 */
+.delete-cancel-btn.el-button {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.85);
+    border-radius: 10px;
+    transition: all 0.2s ease;
+}
+
+.delete-cancel-btn.el-button:hover {
+    background: rgba(255, 255, 255, 0.16);
+    border-color: rgba(255, 255, 255, 0.35);
+    color: #fff;
+}
+
+/* 确认删除按钮 */
+.delete-confirm-btn.el-button {
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #ff6b6b, #ff5c8a);
+    color: #fff;
+    box-shadow: 0 4px 14px rgba(255, 92, 138, 0.35);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.delete-confirm-btn.el-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 22px rgba(255, 92, 138, 0.55);
+}
+</style>

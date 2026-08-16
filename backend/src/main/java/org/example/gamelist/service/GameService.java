@@ -54,5 +54,17 @@ public class GameService {
         gameUser.setAddDate(LocalDate.now());
         gameUserMapper.insert(gameUser);
     }
+    public boolean updatePlayed(Integer played,Integer gameId){
+        int row = gameUserMapper.updatePlayed(played,UserContext.getCurrentId(),gameId);
+        if (row > 0){
+            return true;
+        }else {return false;}
+    }
+    public boolean deleteGame(Integer gameId){
+        int row = gameUserMapper.deleteGame(UserContext.getCurrentId(),gameId);
+        if (row > 0){
+            return true;
+        }else {return false;}
+    }
 }
 

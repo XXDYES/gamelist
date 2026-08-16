@@ -11,13 +11,14 @@ import org.example.gamelist.vo.GameVO;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class GameController {
     @Resource
     private GameService gameService;
     @RequestMapping(value = "/getlist", method = {RequestMethod.POST, RequestMethod.GET})
-    public Result getList(){
+    public Result<?> getList(){
         try {
             Integer userId = UserContext.getCurrentId();
             List<GameVO> gameList = gameService.getGameList(userId);
@@ -35,5 +36,21 @@ public class GameController {
     public Result<?> addGame(@RequestBody Game game){
         gameService.addGame(game);
         return Result.success();
+    }
+    @PostMapping("/setplayed")
+    public Result<?> setPlayed(@RequestBody Map<String,Integer>data){
+        Integer played = data.get("played");
+        Integer gameId = data.get("gameId");
+        boolean update = gameService.updatePlayed(played,gameId);
+        if (update){
+            return Result.success();
+        }else {return Result.error("更新失败");}
+    }
+    @GetMapping("/deletegame")
+    public Result<?> deleteGame(@RequestParam Integer gameId){
+        boolean delete = gameService.deleteGame(gameId);
+        if (delete){
+            return Result.success();
+        }else {return Result.error("删除失败");}
     }
 }

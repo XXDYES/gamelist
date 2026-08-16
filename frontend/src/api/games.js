@@ -10,5 +10,11 @@ export const gameApi = {
   },
   insertGame(game){
     return request.post('/addgame',game)
+  },
+  setPlayed(data){
+    return request.post('/setplayed',data)
+  },
+  deleteGame(gameId){
+    return request.get('/deletegame',{params:{gameId}})
   }
 }
