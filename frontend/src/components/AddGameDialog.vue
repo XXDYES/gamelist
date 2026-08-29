@@ -7,7 +7,7 @@
         <el-form :model="addGame.data" label-width="90px" ref="formRef" :rules="addGame.rules"
             class="add-game-form">
             <el-form-item label="名称：" prop="name" class="span-2">
-                <el-input v-model="addGame.data.name" placeholder="请输入" style="width: 180px;margin-right: 20px;" />
+                <el-input v-model="addGame.data.name" placeholder="请输入(15字以内)" maxlength="15" style="width: 180px;margin-right: 20px;" />
                 <AiGenButton @click="aiGenerate()" :loading="aiLoading"></AiGenButton>
                 <div style="display: flex;margin: 0 15px 0 10px;">
                     <el-switch v-model="effectSwitch" class="effect-switch" size="small" active-text="开"
@@ -96,7 +96,10 @@ const skillActive = ref(false)
 const addGame = reactive({
     data: { name: '', company: '', platform: [], type: '', info: '', price: '', mcRating: '', releaseDate: '', cover: '' },
     rules: {
-        name: [{ required: true, message: '请输入游戏名称', trigger: 'blur' }],
+        name: [
+            { required: true, message: '请输入游戏名称', trigger: 'blur' },
+            { max: 15, message: '游戏名称不能超过15个字符', trigger: 'blur' }
+        ],
         company: [{ required: true, message: '请输入制作商', trigger: 'blur' }],
         platform: [{ required: true, message: '请输入游戏平台', trigger: 'blur' }]
     }

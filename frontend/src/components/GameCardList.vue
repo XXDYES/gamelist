@@ -1,6 +1,7 @@
 <template>
     <el-collapse v-model="activeNames" accordion class="custom-collapse">
-        <el-collapse-item v-for="game in games" :key="game.id" :name="String(game.id)">
+        <div v-if="games.length === 0" class="empty-tip">此处无数据，快添加吧</div>
+        <el-collapse-item  v-else v-for="game in games" :key="game.id" :name="String(game.id)">
             <template #title>
                 <div class="itembox-content">
                     <span style="font-size: 26px;">🎯{{ game.name }}</span>
@@ -8,7 +9,9 @@
                     <span class="game-tag">🖥️:{{ game.platform }}</span>
                     <span class="game-tag">🕹️:{{ game.type }}</span>
                 </div>
-                <div @click.stop>
+                <div @click.stop style="display: flex; align-items: center;">
+                    <el-rate v-model="game.rating" v-if="game.played!=0" :texts="['拉完了', '拉', 'NPC', '夯', '夯爆了']" 
+                    size="large" show-text style="pointer-events: auto !important;" @change="setRating(game)"/>
                     <el-popover trigger="click" placement="left" :width="100" popper-class="status-popover">
                         <el-radio-group v-model="playStatus"
                             style="display: flex; flex-direction: column; align-items: flex-start; gap: 5px;">
@@ -26,7 +29,7 @@
                     </el-popover>
                     <el-tooltip class="box-item" effect="dark" content="编辑信息" placement="top">
                         <el-button type="primary" :icon="Edit" circle style="width: 40px; height: 40px; font-size: 20px;margin-left: 6px;
-                            pointer-events: auto !important;"></el-button>
+                            pointer-events: auto !important;" @click="editDialog = true;editTarget = game"></el-button>
                     </el-tooltip>
                     <el-tooltip class="box-item" effect="dark" content="分享信息" placement="top">
                         <el-button type="warning" :icon="Share" circle style="width: 40px; height: 40px; font-size: 20px;margin-left: 6px;
@@ -34,7 +37,8 @@
                     </el-tooltip>
                     <el-tooltip class="box-item" effect="dark" content="删除信息" placement="top">
                         <el-button type="danger" :icon="Delete" circle style="width: 40px; height: 40px; font-size: 20px;margin-left: 6px;
-                            pointer-events: auto !important;" @click="deleteDialog=true;deleteTarget=game"></el-button>
+                            pointer-events: auto !important;"
+                            @click="deleteDialog = true; deleteTarget = game"></el-button>
                     </el-tooltip>
                 </div>
             </template>
@@ -51,6 +55,7 @@
             <div class="divider-label">💬 游戏评价</div>
         </el-collapse-item>
     </el-collapse>
+    <EditDialog v-model:visible="editDialog" :game="editTarget" @edit="emit('edit')"/>
     <el-dialog v-model="deleteDialog" class="delete-dialog" width="420" align-center append-to-body center>
         <template #header>
             <span class="delete-dialog-title">🗑️ 确认删除游戏</span>
@@ -64,7 +69,7 @@
         </div>
         <template #footer>
             <div class="dialog-footer">
-                <el-button class="delete-cancel-btn" @click="deleteDialog=false">取消</el-button>
+                <el-button class="delete-cancel-btn" @click="deleteDialog = false">取消</el-button>
                 <el-button class="delete-confirm-btn" @click="deleteGame(deleteTarget)">确认删除</el-button>
             </div>
         </template>
@@ -76,28 +81,39 @@ import { ref } from 'vue'
 import { Select, Edit, Share, Delete } from '@element-plus/icons-vue'
 import { gameApi } from '@/api'
 import { ElMessage } from 'element-plus'
+import EditDialog from './EditDialog.vue'
 
 defineProps({
     games: { type: Array, default: () => [] }
 })
-const emit = defineEmits(['change-status','delete'])
+const emit = defineEmits(['change-status', 'delete','edit'])
 
 const activeNames = ref('')
 const playStatus = ref(0)
 const deleteDialog = ref(false)
 const deleteTarget = ref(null)
+const editDialog = ref(false)
+const editTarget = ref(null)
 const confirmStatus = (game) => {
     emit('change-status', { game, played: playStatus.value })
 }
-const deleteGame = async(game) => {
+const setRating = async(game) => {
     try{
+        const res = await gameApi.setRating({gameId:game.id,rating:game.rating})
+        if (res.data.code == "200") {
+            ElMessage.success("设置成功")
+        } else { ElMessage.error(res.data.msg) }
+    }catch(error) { ElMessage.error("设置失败") }
+}
+const deleteGame = async (game) => {
+    try {
         const res = await gameApi.deleteGame(game.id)
-        if(res.data.code == "200"){
+        if (res.data.code == "200") {
             ElMessage.success("删除成功")
             emit('delete')
             deleteDialog.value = false
-        }else{ElMessage.error(res.data.msg)}
-    }catch(error){ElMessage.error("删除失败")}
+        } else { ElMessage.error(res.data.msg) }
+    } catch (error) { ElMessage.error("删除失败") }
 
 }
 </script>
@@ -173,6 +189,28 @@ const deleteGame = async(game) => {
     transform: rotate(90deg);
 }
 
+.custom-collapse :deep(.el-rate__text) {
+    order: -1;
+    margin-right: 10px;
+}
+
+.custom-collapse :deep(.el-rate) {
+    --el-rate-void-color: #808080;
+    /* background: rgba(217, 255, 0, 0.35); */
+    border: 1px solid rgba(0, 0, 0, 0.04);
+    border-radius: 999px;
+    padding: 2px 8px;
+}
+
+/* 悬停放大 */
+.custom-collapse :deep(.el-rate__item) {
+    transition: transform 0.15s ease;
+}
+
+.custom-collapse :deep(.el-rate__item:hover) {
+    transform: scale(1.18);
+}
+
 .custom-collapse :deep(.el-collapse-item__content) {
     padding: 8px 0 0 0;
     background: transparent;
@@ -210,6 +248,11 @@ const deleteGame = async(game) => {
     color: #4eafff;
     background: rgba(64, 158, 255, 0.12);
     white-space: nowrap;
+}
+.empty-tip {
+    text-align: center;
+    color: rgba(255, 255, 255, 1);
+    font-size: 40px;
 }
 </style>
 

@@ -41,6 +41,9 @@ public class LoginService {
         if (register.getUsername() == null ||register.getUsername().isEmpty()){
             throw new BusinessException("账号不能为空");
         }
+        if (register.getUsername().length() > 10){
+            throw new BusinessException("用户名长度不能超过10个字符");
+        }
         if (register.getPassword() == null ||register.getPassword().isEmpty()){
             throw new BusinessException("密码不能为空");
         }

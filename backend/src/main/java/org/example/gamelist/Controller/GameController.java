@@ -53,4 +53,20 @@ public class GameController {
             return Result.success();
         }else {return Result.error("删除失败");}
     }
+    @PostMapping("/setrating")
+    public Result<?> setRating(@RequestBody Map<String,Integer>data){
+        Integer rating = data.get("rating");
+        Integer gameId = data.get("gameId");
+        boolean update = gameService.updateRating(rating,gameId);
+        if (update){
+            return Result.success();
+        }else {return Result.error("更新失败");}
+    }
+    @PostMapping("/editgame")
+    public Result<?> editGame(@RequestBody Game game){
+        boolean res = gameService.editGame(game);
+        if (res){
+            return Result.success();
+        }else {return Result.error("无权修改此信息");}
+    }
 }

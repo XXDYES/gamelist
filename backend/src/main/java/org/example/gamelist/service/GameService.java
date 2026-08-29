@@ -66,5 +66,19 @@ public class GameService {
             return true;
         }else {return false;}
     }
+    public boolean updateRating(Integer rating,Integer gameId){
+        int row = gameUserMapper.updateRating(rating,UserContext.getCurrentId(),gameId);
+        if (row > 0){
+            return true;
+        }else {return false;}
+    }
+    @Transactional
+    public boolean editGame(Game game){
+        int row = gameUserMapper.editAccess(UserContext.getCurrentId(),game.getId());
+        if (row > 0){
+            gameMapper.updateById(game);
+            return true;
+        }else {return false;}
+    }
 }
 

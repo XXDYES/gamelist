@@ -11,8 +11,11 @@
                 style="color: white;position: absolute;left: 50%;top:50%; transform: translate(-50%, -50%);font-size: 20px; font-weight: bold;">
                 GAMELIST V1.0
             </div>
-            <div style="margin-left: auto;">
-                <el-avatar :size="35"> user </el-avatar><span style="color: white;margin: 0 15px;">{{
+            <div style="margin-left: auto;display: flex;align-items: center;">
+                <el-icon :size="20" style="color: white;"><Message /></el-icon>
+                <span style="margin: 0 25px 0 5px;color: #fff;">消息</span>
+                <FriendTab/>
+                <el-avatar :size="35"> user </el-avatar><span style="color: white;margin: 0 20px 0 10px;font-size: large;">{{
                     userInfo.username || '未登录' }}</span>
             </div>
         </div>
@@ -67,28 +70,29 @@
             </div>
             <el-tabs v-model="activeTab" class="custom-tabs">
                 <el-tab-pane label="🕜️待玩" name="notplayed">
-                    <GameCardList :games="notplayedgames" @change-status="onChangeStatus" @delete="fetchGameList" />
+                    <GameCardList :games="notplayedgames" @change-status="onChangeStatus" @delete="fetchGameList" @edit="fetchGameList"/>
                 </el-tab-pane>
                 <el-tab-pane label="✅️已玩" name="played">
-                    <GameCardList :games="playedgames" @change-status="onChangeStatus" @delete="fetchGameList" />
+                    <GameCardList :games="playedgames" @change-status="onChangeStatus" @delete="fetchGameList" @edit="fetchGameList"/>
                 </el-tab-pane>
                 <el-tab-pane label="❌️弃坑" name="giveup">
-                    <GameCardList :games="giveupgames" @change-status="onChangeStatus" @delete="fetchGameList"/>
+                    <GameCardList :games="giveupgames" @change-status="onChangeStatus" @delete="fetchGameList" @edit="fetchGameList"/>
                 </el-tab-pane>
                 <el-tab-pane label="👀全部" name="all">
-                    <GameCardList :games="sortedgames" @change-status="onChangeStatus" @delete="fetchGameList"/>
+                    <GameCardList :games="sortedgames" @change-status="onChangeStatus" @delete="fetchGameList" @edit="fetchGameList"/>
                 </el-tab-pane>
             </el-tabs>
         </div>
     </div>
 </template>
 <script setup>
-import { Back, Plus, Search, Sort, Menu } from '@element-plus/icons-vue'
+import { Back, Plus, Search, Sort, Menu,User,Message } from '@element-plus/icons-vue'
 import { computed, onMounted, reactive, ref } from 'vue';
 import { ElMessage } from 'element-plus'
 import WallpaperSwitch from '@/components/WallpaperSwitch.vue';
 import AddGameDialog from '@/components/AddGameDialog.vue';
 import GameCardList from '@/components/GameCardList.vue';
+import FriendTab from '@/components/FriendTab.vue';
 import 'element-plus/dist/index.css'
 import router from '@/router';
 import { userApi, gameApi } from '@/api'
@@ -109,6 +113,7 @@ const sortOrder = ref('desc')
 const sortPopVisible = ref(false)
 const onChangeStatus = async ({ game, played }) => {
     try {
+        if(game.name == "原神" && played == 2){ElMessage.error("好大的胆子，原神都敢弃坑😡")}
         const res = await gameApi.setPlayed({ played, gameId: game.id })
         if (res.data.code === '200') {
             ElMessage.success('设置成功')
@@ -163,9 +168,6 @@ const fetchGameList = async () => {
 };
 const activeTab = ref('notplayed')
 const value = ref()
-const handleClick = (tab, event) => {
-    console.log(tab, event)
-}
 const dialogVisable = ref(false)
 const loginout = () => {
     localStorage.removeItem("userToken")
@@ -340,7 +342,7 @@ const giveupgames = computed(() => {
 
 /* ===== 悬停效果 ===== */
 .custom-tabs :deep(.el-tabs__item:hover) {
-    color: rgba(205, 205, 205, 0.85);
+    color: rgba(255, 255, 255, 0.85);
     transform: translateY(-4px);
 }
 

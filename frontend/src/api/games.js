@@ -16,5 +16,11 @@ export const gameApi = {
   },
   deleteGame(gameId){
     return request.get('/deletegame',{params:{gameId}})
+  },
+  setRating(data){
+    return request.post('/setrating',data)
+  },
+  editGame(data){
+    return request.post('/editgame',data)
   }
 }
