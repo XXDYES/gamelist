@@ -1,7 +1,7 @@
 <template>
-    <el-collapse v-model="activeNames" accordion class="custom-collapse">
+    <el-collapse v-model="activeNames" accordion class="custom-collapse" @change="resetComment">
         <div v-if="games.length === 0" class="empty-tip">此处无数据，快添加吧</div>
-        <el-collapse-item  v-else v-for="game in games" :key="game.id" :name="String(game.id)">
+        <el-collapse-item v-else v-for="game in games" :key="game.id" :name="String(game.id)">
             <template #title>
                 <div class="itembox-content">
                     <span style="font-size: 26px;">🎯{{ game.name }}</span>
@@ -10,8 +10,8 @@
                     <span class="game-tag">🕹️:{{ game.type }}</span>
                 </div>
                 <div @click.stop style="display: flex; align-items: center;">
-                    <el-rate v-model="game.rating" v-if="game.played!=0" :texts="['拉完了', '拉', 'NPC', '夯', '夯爆了']" 
-                    size="large" show-text style="pointer-events: auto !important;" @change="setRating(game)"/>
+                    <el-rate v-model="game.rating" v-if="game.played != 0" :texts="['拉完了', '拉', 'NPC', '夯', '夯爆了']"
+                        size="large" show-text style="pointer-events: auto !important;" @change="setRating(game)" />
                     <el-popover trigger="click" placement="left" :width="100" popper-class="status-popover">
                         <el-radio-group v-model="playStatus"
                             style="display: flex; flex-direction: column; align-items: flex-start; gap: 5px;">
@@ -29,7 +29,8 @@
                     </el-popover>
                     <el-tooltip class="box-item" effect="dark" content="编辑信息" placement="top">
                         <el-button type="primary" :icon="Edit" circle style="width: 40px; height: 40px; font-size: 20px;margin-left: 6px;
-                            pointer-events: auto !important;" @click="editDialog = true;editTarget = game"></el-button>
+                            pointer-events: auto !important;"
+                            @click="editDialog = true; editTarget = game"></el-button>
                     </el-tooltip>
                     <el-tooltip class="box-item" effect="dark" content="分享信息" placement="top">
                         <el-button type="warning" :icon="Share" circle style="width: 40px; height: 40px; font-size: 20px;margin-left: 6px;
@@ -53,9 +54,46 @@
                 <div style="text-indent: 2em;">{{ game.info }}</div>
             </div>
             <div class="divider-label">💬 游戏评价</div>
+            <div style="display: flex;align-items: stretch;gap: 10px;padding: 10px;">
+                <el-avatar :size="50" class="friend-avatar">
+                    <span style="font-size: 20px;">{{ userStore.username.charAt(0) }}</span>
+                </el-avatar>
+                <el-input v-model="comment" placeholder="请输入评价(400字以内)" style="width: 80%;" :rows="2" class="message-input"
+                    type="textarea" />
+                <div style="display: flex;flex-direction: column;">
+                    <el-rate v-model="cmtrating" style="height: 12px;" />
+                    <el-button style="flex: 1;width: 70%;margin: 3px auto 0 auto;color: #fff;
+                    background: linear-gradient(135deg, #38ef7d 0%, #00b894 100%);
+                    border-radius: 15px;" @click="addComment(game)">
+                        提交</el-button>
+                </div>
+            </div>
+            <div v-if="(comments[game.id] || []).length">
+                <div v-for="c in comments[game.id]" :key="c.id">
+                    <div style="display: flex;padding: 10px;align-items: center;gap: 10px;
+                    background-color: #f0f0f0 ; border-radius: 25px;margin-bottom: 10px;">
+                        <el-avatar :size="50" class="friend-avatar"
+                            style="background: linear-gradient(135deg, #82ff73 , #2cda18);">
+                            <span style="font-size: 20px;">{{ c.username.charAt(0) }}</span>
+                        </el-avatar>
+                        <div style="display: flex;flex-direction: column;align-items: flex-start;">
+                            <span style="font-size: 32px;line-height: 1;" class="gradient-text">{{ c.username }}</span>
+                            <span style="font-size: 12px;line-height: 1.05;color: #9B9B9B ;white-space: nowrap;">{{
+                                c.createAt
+                            }}</span>
+                        </div>
+                        <el-rate v-model="c.rating" disabled></el-rate>
+                        <span style="text-align: start;">{{ c.content }}</span>
+                        <el-button type="danger" :icon="Delete" circle style="width: 40px; height: 40px;
+                         font-size: 20px;margin-left: auto;
+                            pointer-events: auto !important;" @click="deleteComment(c.id)"></el-button>
+                    </div>
+                </div>
+            </div>
+            <div v-else>---暂无评价，快来抢沙发🥵---</div>
         </el-collapse-item>
     </el-collapse>
-    <EditDialog v-model:visible="editDialog" :game="editTarget" @edit="emit('edit')"/>
+    <EditDialog v-model:visible="editDialog" :game="editTarget" @edit="emit('edit')" />
     <el-dialog v-model="deleteDialog" class="delete-dialog" width="420" align-center append-to-body center>
         <template #header>
             <span class="delete-dialog-title">🗑️ 确认删除游戏</span>
@@ -79,31 +117,38 @@
 <script setup>
 import { ref } from 'vue'
 import { Select, Edit, Share, Delete } from '@element-plus/icons-vue'
-import { gameApi } from '@/api'
+import { commentApi, gameApi } from '@/api'
 import { ElMessage } from 'element-plus'
 import EditDialog from './EditDialog.vue'
-
+import { useUserStore } from '@/store/user'
 defineProps({
-    games: { type: Array, default: () => [] }
+    games: { type: Array, default: () => [] },
+    comments: { type: Object, default: () => ({}) }
 })
-const emit = defineEmits(['change-status', 'delete','edit'])
-
+const emit = defineEmits(['change-status', 'delete', 'edit','addcmt'])
+const userStore = useUserStore()
+const comment = ref('')
+const cmtrating = ref(0)
 const activeNames = ref('')
 const playStatus = ref(0)
 const deleteDialog = ref(false)
 const deleteTarget = ref(null)
 const editDialog = ref(false)
 const editTarget = ref(null)
+const resetComment = () => {
+    cmtrating.value = 0
+    comment.value = ''
+}
 const confirmStatus = (game) => {
     emit('change-status', { game, played: playStatus.value })
 }
-const setRating = async(game) => {
-    try{
-        const res = await gameApi.setRating({gameId:game.id,rating:game.rating})
+const setRating = async (game) => {
+    try {
+        const res = await gameApi.setRating({ gameId: game.id, rating: game.rating })
         if (res.data.code == "200") {
             ElMessage.success("设置成功")
         } else { ElMessage.error(res.data.msg) }
-    }catch(error) { ElMessage.error("设置失败") }
+    } catch (error) { ElMessage.error("设置失败") }
 }
 const deleteGame = async (game) => {
     try {
@@ -114,7 +159,28 @@ const deleteGame = async (game) => {
             deleteDialog.value = false
         } else { ElMessage.error(res.data.msg) }
     } catch (error) { ElMessage.error("删除失败") }
-
+}
+const addComment = async (game) => {
+    try {
+        const res = await commentApi.addComment({
+            gameId: game.id, content: comment.value.trim(), rating: cmtrating.value
+        })
+        if (res.data.code === '200') {
+        ElMessage.success('评论成功')
+        comment.value = ''
+        cmtrating.value = 0
+        emit('addcmt')
+        }else{ElMessage.error(res.data.msg)}
+    }catch(e){ElMessage.error('网络错误，添加评论失败')}
+}
+const deleteComment = async(id) => {
+    try{
+        const res = await commentApi.deleteComment(id)
+        if(res.data.code === '200'){
+            ElMessage.success("删除评论成功")
+            emit("addcmt")
+        }
+    }catch{ElMessage.error("网络异常，删除失败")}
 }
 </script>
 
@@ -195,10 +261,11 @@ const deleteGame = async (game) => {
 }
 
 .custom-collapse :deep(.el-rate) {
-    --el-rate-void-color: #808080;
+    --el-rate-void-color: #909399;
+    --el-rate-disabled-void-color: #b7b8b9;
     /* background: rgba(217, 255, 0, 0.35); */
-    border: 1px solid rgba(0, 0, 0, 0.04);
-    border-radius: 999px;
+    /* border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 999px; */
     padding: 2px 8px;
 }
 
@@ -209,6 +276,16 @@ const deleteGame = async (game) => {
 
 .custom-collapse :deep(.el-rate__item:hover) {
     transform: scale(1.18);
+}
+
+/* 禁用状态（评论展示星级）：去掉指针和悬停放大 */
+.custom-collapse :deep(.el-rate.is-disabled .el-rate__item) {
+    cursor: default;
+    transform: none;
+}
+
+.custom-collapse :deep(.el-rate.is-disabled .el-rate__item:hover) {
+    transform: none;
 }
 
 .custom-collapse :deep(.el-collapse-item__content) {
@@ -249,6 +326,7 @@ const deleteGame = async (game) => {
     background: rgba(64, 158, 255, 0.12);
     white-space: nowrap;
 }
+
 .empty-tip {
     text-align: center;
     color: rgba(255, 255, 255, 1);
@@ -369,5 +447,14 @@ const deleteGame = async (game) => {
 .delete-confirm-btn.el-button:hover {
     transform: translateY(-1px);
     box-shadow: 0 6px 22px rgba(255, 92, 138, 0.55);
+}
+
+.gradient-text {
+    background: linear-gradient(120deg, #2c3e50, #6b89ff);
+    -webkit-background-clip: text;
+    /* 把背景裁剪成文字形状 */
+    background-clip: text;
+    color: transparent;
+    /* 让文字本身透明，露出后面的渐变背景 */
 }
 </style>

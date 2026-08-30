@@ -16,7 +16,7 @@
                 <span style="margin: 0 25px 0 5px;color: #fff;">消息</span>
                 <FriendTab/>
                 <el-avatar :size="35"> user </el-avatar><span style="color: white;margin: 0 20px 0 10px;font-size: large;">{{
-                    userInfo.username || '未登录' }}</span>
+                    userStore.username || '未登录' }}</span>
             </div>
         </div>
         <WallpaperSwitch v-model:bgurl="curbgurl" :bglist="bglist" />
@@ -69,17 +69,21 @@
                 </el-popover>
             </div>
             <el-tabs v-model="activeTab" class="custom-tabs">
-                <el-tab-pane label="🕜️待玩" name="notplayed">
-                    <GameCardList :games="notplayedgames" @change-status="onChangeStatus" @delete="fetchGameList" @edit="fetchGameList"/>
+                <el-tab-pane label="🕜️待玩" name="notplayed" lazy>
+                    <GameCardList :games="notplayedgames" :comments="comments"
+                    @change-status="onChangeStatus" @delete="fetchGameList" @edit="fetchGameList" @addcmt="getComment"/>
                 </el-tab-pane>
-                <el-tab-pane label="✅️已玩" name="played">
-                    <GameCardList :games="playedgames" @change-status="onChangeStatus" @delete="fetchGameList" @edit="fetchGameList"/>
+                <el-tab-pane label="✅️已玩" name="played" lazy>
+                    <GameCardList :games="playedgames" :comments="comments"
+                    @change-status="onChangeStatus" @delete="fetchGameList" @edit="fetchGameList" @addcmt="getComment"/>
                 </el-tab-pane>
-                <el-tab-pane label="❌️弃坑" name="giveup">
-                    <GameCardList :games="giveupgames" @change-status="onChangeStatus" @delete="fetchGameList" @edit="fetchGameList"/>
+                <el-tab-pane label="❌️弃坑" name="giveup" lazy>
+                    <GameCardList :games="giveupgames" :comments="comments"
+                    @change-status="onChangeStatus" @delete="fetchGameList" @edit="fetchGameList" @addcmt="getComment"/>
                 </el-tab-pane>
-                <el-tab-pane label="👀全部" name="all">
-                    <GameCardList :games="sortedgames" @change-status="onChangeStatus" @delete="fetchGameList" @edit="fetchGameList"/>
+                <el-tab-pane label="👀全部" name="all" lazy>
+                    <GameCardList :games="sortedgames" :comments="comments"
+                    @change-status="onChangeStatus" @delete="fetchGameList" @edit="fetchGameList" @addcmt="getComment"/>
                 </el-tab-pane>
             </el-tabs>
         </div>
@@ -95,7 +99,9 @@ import GameCardList from '@/components/GameCardList.vue';
 import FriendTab from '@/components/FriendTab.vue';
 import 'element-plus/dist/index.css'
 import router from '@/router';
-import { userApi, gameApi } from '@/api'
+import { userApi, gameApi, commentApi } from '@/api'
+import { useUserStore } from '@/store/user'
+const userStore = useUserStore()
 const bglist = [
     require('@/assets/re9.jpg'),
     require('@/assets/ER.jpg'),
@@ -111,6 +117,19 @@ const inputword = ref('')
 const sortField = ref('addDate')
 const sortOrder = ref('desc')
 const sortPopVisible = ref(false)
+const comments = ref({})
+const getComment = async() => {
+    const res = await commentApi.getComment()
+    if(res.data.code === '200'){
+        const map = {}
+        res.data.data.forEach(c => {
+            if (!map[c.gameId]){map[c.gameId] = []}
+            map[c.gameId].push(c)
+        });
+        comments.value = map
+        console.log(comments.value)
+    }else{ElMessage.error('获取评论失败')}
+}
 const onChangeStatus = async ({ game, played }) => {
     try {
         if(game.name == "原神" && played == 2){ElMessage.error("好大的胆子，原神都敢弃坑😡")}
@@ -135,28 +154,9 @@ const clicksearch = () => {
     keyword.value = inputword.value.trim()
 }
 const clearkeyword = () => { keyword.value = "" }
-const fetchUserInfo = async () => {
-    try {
-        const res = await userApi.getUserInfo();
-        if (res.data.code === "200") {
-            userInfo.value = res.data.data;
-            await fetchGameList();
-        } else {
-            userInfo.value = { username: '未登录' };
-        }
-    } catch (error) {
-        console.error('获取用户信息失败：', error);
-        userInfo.value = { username: '未登录' };
-    }
-};
 const fetchGameList = async () => {
     try {
-        const userId = userInfo.value.id;
-        if (!userId) {
-            console.warn('用户ID不存在，无法获取游戏列表');
-            return;
-        }
-        const res = await gameApi.getGameList(userId);
+        const res = await gameApi.getGameList();
         if (res.data.code === "200") {
             gamelist.value = res.data.data;
             console.log('游戏列表:', gamelist.value);
@@ -176,7 +176,9 @@ const loginout = () => {
 const gamelist = ref([])
 onMounted(() => {
     // 获取用户信息
-    fetchUserInfo();
+    fetchGameList()
+    userStore.fetchUserInfo()
+    getComment()
 })
 function extractNumber(str) {
     const match = String(str).match(/(\d+(\.\d+)?)/)
