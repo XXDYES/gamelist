@@ -17,7 +17,6 @@ public class GameVO {
     private String price;
     private String mcRating;      // 对应 mc_rating
     private String releaseDate;   // 对应 release_date
-
     // ========== user_game 表字段（关联查询） ==========
     private Integer played;       // 0=待玩 1=已玩
     private Integer rating;       // 评分 1-5

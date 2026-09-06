@@ -13,3 +13,6 @@ logs/
 
 # Windows 系统文件
 desktop.ini
+
+# 本地 GitHub CLI 副本（Codex 沙箱执行用，勿提交）
+.gh/

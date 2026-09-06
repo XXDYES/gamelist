@@ -2,114 +2,124 @@
     <div class="bg" :style="{ backgroundImage: `url(${curbgurl})` }">
         <div class="pagehead">
             <div style="margin-right: auto;display: flex;align-items: center;">
-                <el-icon :size="35" style="color:white;cursor: pointer;margin: auto 15px;" @click="loginout">
+                <el-icon :size="35" style="color:white;cursor: pointer;margin: auto 15px;" @click="backhome">
                     <Back />
                 </el-icon>
-                <span style="color: white;font-size: 16px;cursor: pointer;line-height: 1;" @click="loginout">退出登入</span>
+                <span style="color: white;font-size: 16px;cursor: pointer;line-height: 1;" @click="backhome">返回主页</span>
             </div>
             <div
                 style="color: white;position: absolute;left: 50%;top:50%; transform: translate(-50%, -50%);font-size: 20px; font-weight: bold;">
-                GAMELIST V1.0
+                正在访问好友主页🏠...
             </div>
             <div style="margin-left: auto;display: flex;align-items: center;">
-                <MessageTab/>
-                <FriendTab/>
-                <el-avatar :size="35"> user </el-avatar><span style="color: white;margin: 0 20px 0 10px;font-size: large;">{{
-                    userStore.username || '未登录' }}</span>
+                <el-icon :size="20" style="color: white;">
+                    <Message />
+                </el-icon>
+                <span style="margin: 0 25px 0 5px;color: #fff;">消息</span>
+                <FriendTab />
+                <el-avatar :size="35"> user </el-avatar><span
+                    style="color: white;margin: 0 20px 0 10px;font-size: large;">{{
+                        userStore.username || '未登录' }}</span>
             </div>
         </div>
         <WallpaperSwitch v-model:bgurl="curbgurl" :bglist="bglist" />
-        <AddGameDialog v-model:visible="dialogVisable" @saved="fetchGameList" />
-        <div class="list_container">
-            <el-tooltip class="box-item" effect="dark" content="添加游戏" placement="top-start">
-                <el-button class="plusbutton" circle :icon="Plus" @click="dialogVisable = true"></el-button>
-            </el-tooltip>
-            <div style="display: flex;justify-content: center;gap: 5px;">
-                <el-input v-model="inputword" class="search-input" style="width: 500px;height: 40px;"
-                    placeholder="输入 名称/制作商/平台/类型 搜索..." :prefix-icon="Search" clearable @clear="clearkeyword" />
-                <el-button type="primary" circle :icon="Search" style="width: 40px;height: 40px;font-size: 20px;"
-                    @click="clicksearch">
-                </el-button>
-                <el-popover class="box-item" v-model:visible="sortPopVisible" transition="none" placement="bottom"
-                    trigger="click" :width="160">
-                    <span style="display: inline-flex; align-items: center; gap: 4px;">
-                        <el-icon>
-                            <Menu />
-                        </el-icon>
-                        <span>排序选项</span>
-                    </span>
-                    <el-divider style="margin: 5px 0;" />
-                    <div style="display: flex;flex-direction: column;width: 100%;gap: 5px;">
-                        <el-radio-group v-model="sortField">
-                            <el-radio value="name">名称(A-Z)</el-radio>
-                            <el-radio value="price">价格</el-radio>
-                            <el-radio value="mcRating">MC评分</el-radio>
-                            <el-radio value="releaseDate">发售日期</el-radio>
-                            <el-radio value="addDate">添加日期</el-radio>
-                        </el-radio-group>
-                        <el-radio-group v-model="sortOrder" size="small">
-                            <el-radio-button label="asc">
-                                ↑升序
-                            </el-radio-button>
-                            <el-radio-button label="desc">
-                                ↓降序
-                            </el-radio-button>
-                        </el-radio-group>
-                        <div style="display: flex;margin-top: 5px;">
-                            <el-button size="middle" @click="resetSort">重置</el-button>
-                            <el-button size="middle" type="primary" @click="sortPopVisible = false">确认</el-button>
-                        </div>
-                    </div>
-                    <template #reference>
-                        <el-button type="primary" circle :icon="Sort"
-                            style="width: 40px;height: 40px;font-size: 20px;margin-left: 0;">
-                        </el-button>
-                    </template>
-                </el-popover>
+        <div style="display: flex;flex: 1; min-height: 0;width: 95%;gap: 30px;margin-top: 20px;">
+            <div class="info-tab">
+                <el-avatar :size="120" class="friend-avatar">
+                    <span style="font-size: 60px;">{{ (friInfo.username || '?').charAt(0) }}</span>
+                </el-avatar>
+                <span style="font-size: 50px;">{{ friInfo.username }}</span>
+                <span style="font-size: 20px;">个性签名：{{ friInfo.signature || '无' }}</span>
+                <div style="flex: 1;background-color: rgba(131, 167, 181, 0.8); width: 100%;border-radius: 20px;">
+                    <span style="font-size: 30px;">拓展功能区</span>
+                </div>
             </div>
-            <el-tabs v-model="activeTab" class="custom-tabs">
-                <el-tab-pane label="🕜️待玩" name="notplayed" lazy>
-                    <GameCardList :games="notplayedgames" :comments="comments"
-                    @change-status="onChangeStatus" @delete="fetchGameList" @edit="fetchGameList" @addcmt="getComment"/>
-                </el-tab-pane>
-                <el-tab-pane label="✅️已玩" name="played" lazy>
-                    <GameCardList :games="playedgames" :comments="comments"
-                    @change-status="onChangeStatus" @delete="fetchGameList" @edit="fetchGameList" @addcmt="getComment"/>
-                </el-tab-pane>
-                <el-tab-pane label="❌️弃坑" name="giveup" lazy>
-                    <GameCardList :games="giveupgames" :comments="comments"
-                    @change-status="onChangeStatus" @delete="fetchGameList" @edit="fetchGameList" @addcmt="getComment"/>
-                </el-tab-pane>
-                <el-tab-pane label="👀全部" name="all" lazy>
-                    <GameCardList :games="sortedgames" :comments="comments"
-                    @change-status="onChangeStatus" @delete="fetchGameList" @edit="fetchGameList" @addcmt="getComment"/>
-                </el-tab-pane>
-            </el-tabs>
+            <div class="list_container">
+                <div style="display: flex;justify-content: center;gap: 5px;">
+                    <el-input v-model="inputword" class="search-input" style="width: 500px;height: 40px;"
+                        placeholder="输入 名称/制作商/平台/类型 搜索..." :prefix-icon="Search" clearable @clear="clearkeyword" />
+                    <el-button type="primary" circle :icon="Search" style="width: 40px;height: 40px;font-size: 20px;"
+                        @click="clicksearch">
+                    </el-button>
+                    <el-popover class="box-item" v-model:visible="sortPopVisible" transition="none" placement="bottom"
+                        trigger="click" :width="160">
+                        <span style="display: inline-flex; align-items: center; gap: 4px;">
+                            <el-icon>
+                                <Menu />
+                            </el-icon>
+                            <span>排序选项</span>
+                        </span>
+                        <el-divider style="margin: 5px 0;" />
+                        <div style="display: flex;flex-direction: column;width: 100%;gap: 5px;">
+                            <el-radio-group v-model="sortField">
+                                <el-radio value="name">名称(A-Z)</el-radio>
+                                <el-radio value="price">价格</el-radio>
+                                <el-radio value="mcRating">MC评分</el-radio>
+                                <el-radio value="releaseDate">发售日期</el-radio>
+                                <el-radio value="addDate">添加日期</el-radio>
+                            </el-radio-group>
+                            <el-radio-group v-model="sortOrder" size="small">
+                                <el-radio-button label="asc">
+                                    ↑升序
+                                </el-radio-button>
+                                <el-radio-button label="desc">
+                                    ↓降序
+                                </el-radio-button>
+                            </el-radio-group>
+                            <div style="display: flex;margin-top: 5px;">
+                                <el-button size="middle" @click="resetSort">重置</el-button>
+                                <el-button size="middle" type="primary" @click="sortPopVisible = false">确认</el-button>
+                            </div>
+                        </div>
+                        <template #reference>
+                            <el-button type="primary" circle :icon="Sort"
+                                style="width: 40px;height: 40px;font-size: 20px;margin-left: 0;">
+                            </el-button>
+                        </template>
+                    </el-popover>
+                </div>
+                <el-tabs v-model="activeTab" class="custom-tabs">
+                    <el-tab-pane label="🕜️待玩" name="notplayed" lazy>
+                        <GameCardList :games="notplayedgames" :comments="comments" @change-status="onChangeStatus"
+                            @delete="fetchGameList" @edit="fetchGameList" @addcmt="getComment" readonly />
+                    </el-tab-pane>
+                    <el-tab-pane label="✅️已玩" name="played" lazy>
+                        <GameCardList :games="playedgames" :comments="comments" @change-status="onChangeStatus"
+                            @delete="fetchGameList" @edit="fetchGameList" @addcmt="getComment" readonly />
+                    </el-tab-pane>
+                    <el-tab-pane label="❌️弃坑" name="giveup" lazy>
+                        <GameCardList :games="giveupgames" :comments="comments" @change-status="onChangeStatus"
+                            @delete="fetchGameList" @edit="fetchGameList" @addcmt="getComment" readonly />
+                    </el-tab-pane>
+                    <el-tab-pane label="👀全部" name="all" lazy>
+                        <GameCardList :games="sortedgames" :comments="comments" @change-status="onChangeStatus"
+                            @delete="fetchGameList" @edit="fetchGameList" @addcmt="getComment" readonly />
+                    </el-tab-pane>
+                </el-tabs>
+            </div>
         </div>
     </div>
 </template>
 <script setup>
-import { Back, Plus, Search, Sort, Menu,User,Message } from '@element-plus/icons-vue'
+import { Back, Plus, Search, Sort, Menu, User, Message } from '@element-plus/icons-vue'
 import { computed, onMounted, reactive, ref } from 'vue';
 import { ElMessage } from 'element-plus'
 import WallpaperSwitch from '@/components/WallpaperSwitch.vue';
-import AddGameDialog from '@/components/AddGameDialog.vue';
 import GameCardList from '@/components/GameCardList.vue';
 import FriendTab from '@/components/FriendTab.vue';
-import MessageTab from '@/components/MessageTab.vue';
 import 'element-plus/dist/index.css'
 import router from '@/router';
-import { userApi, gameApi, commentApi } from '@/api'
+import { userApi, gameApi, commentApi, friendApi } from '@/api'
 import { useUserStore } from '@/store/user'
+import { useRoute } from 'vue-router';
 const userStore = useUserStore()
+const route = useRoute()
 const bglist = [
-    require('@/assets/re9.jpg'),
-    require('@/assets/ER.jpg'),
-    require('@/assets/XB2.webp'),
-    require('@/assets/zelda1.jpg'),
-    require('@/assets/FF7.jpg')
+    require('@/assets/sora.webp'),
+    require('@/assets/FF16.jpg')
 ]
-const curbgurl = ref(bglist[Number(localStorage.getItem('bgIndex')) || 0])
+const bgIndex = Number(localStorage.getItem('bgIndex')) || 0
+const curbgurl = ref(bglist[bgIndex % bglist.length])
 // ========== 新增：用户信息 ==========
 const userInfo = ref({ username: '未登录' });
 const keyword = ref('')
@@ -118,32 +128,24 @@ const sortField = ref('addDate')
 const sortOrder = ref('desc')
 const sortPopVisible = ref(false)
 const comments = ref({})
-const getComment = async() => {
-    const res = await commentApi.getComment()
-    if(res.data.code === '200'){
+const friInfo = ref({})
+const getComment = async () => {
+    const res = await commentApi.getFriComment(route.params.id)
+    if (res.data.code === '200') {
         const map = {}
         res.data.data.forEach(c => {
-            if (!map[c.gameId]){map[c.gameId] = []}
+            if (!map[c.gameId]) { map[c.gameId] = [] }
             map[c.gameId].push(c)
         });
         comments.value = map
-        console.log('评论列表：',comments.value)
-    }else{ElMessage.error('获取评论失败')}
+        console.log('评论列表：', comments.value)
+    } else { ElMessage.error('获取评论失败') }
 }
-const onChangeStatus = async ({ game, played }) => {
-    try {
-        if(game.name == "原神" && played == 2){ElMessage.error("好大的胆子，原神都敢弃坑😡")}
-        const res = await gameApi.setPlayed({ played, gameId: game.id })
-        if (res.data.code === '200') {
-            ElMessage.success('设置成功')
-            await fetchGameList()
-        } else {
-            ElMessage.error(res.data.msg)
-        }
-    } catch (error) {
-        ElMessage.error('设置失败')
-        await fetchGameList()
-    }
+const getFriInfo = async () => {
+    const res = await friendApi.getFriInfo(route.params.id)
+    if(res.data.code === '200'){
+        friInfo.value = res.data.data
+    }else{ElMessage.error("获取好友信息失败")}
 }
 const resetSort = () => {
     sortField.value = 'addDate'
@@ -156,11 +158,11 @@ const clicksearch = () => {
 const clearkeyword = () => { keyword.value = "" }
 const fetchGameList = async () => {
     try {
-        const res = await gameApi.getGameList();
+        const res = await friendApi.getFriGame(route.params.id);
         if (res.data.code === "200") {
             gamelist.value = res.data.data;
-            console.log('游戏列表:', gamelist.value);
-        }
+            console.log('好友游戏列表:', gamelist.value);
+        }else{ElMessage.error(res.data.msg);router.push('/gamelist')}
     } catch (error) {
         console.error('获取列表失败：', error);
         ElMessage.error('获取列表失败');
@@ -169,9 +171,8 @@ const fetchGameList = async () => {
 const activeTab = ref('notplayed')
 const value = ref()
 const dialogVisable = ref(false)
-const loginout = () => {
-    localStorage.removeItem("userToken")
-    router.push("/login")
+const backhome = () => {
+    router.push("/gamelist")
 }
 const gamelist = ref([])
 onMounted(() => {
@@ -179,6 +180,7 @@ onMounted(() => {
     fetchGameList()
     userStore.fetchUserInfo()
     getComment()
+    getFriInfo()
 })
 function extractNumber(str) {
     const match = String(str).match(/(\d+(\.\d+)?)/)
@@ -251,10 +253,11 @@ const giveupgames = computed(() => {
 }
 
 .list_container {
-    /* flex: 1; */
-    width: 70%;
-    height: 90%;
-    background-color: rgba(183, 183, 183, 0.7);
+    flex: 1;          /* 吃掉剩余宽度 */
+    min-width: 0;
+    width: auto;      
+    height: 95%;    
+    background-color: rgba(147, 168, 176, 0.7);
     border-radius: 25px;
     padding: 10px 30px;
     box-sizing: border-box;
@@ -380,7 +383,7 @@ const giveupgames = computed(() => {
     height: 5%;
     min-height: 20px;
     max-height: 80px;
-    background-color: #444;
+    background: linear-gradient(90deg, #6bc9ff, #00b894);
     z-index: 999;
     display: flex;
     align-items: center;
@@ -393,11 +396,9 @@ const giveupgames = computed(() => {
     overflow: hidden;
     /* overflow-y: auto; */
     display: flex;
-    /* flex-wrap: wrap; */
+    flex-wrap: wrap;
     flex-direction: column;
-    align-items: center;
-    background-color: rgba(0, 0, 0, 0.2);
-    /* background-image: url("@/assets/re9.jpg"); */
+    align-items: flex-start;
     background-size: cover;
     background-position: 50% 20%;
     gap: 15px;
@@ -414,35 +415,18 @@ const giveupgames = computed(() => {
     transition: all 0.3s ease;
 }
 
-.plusbutton {
-    position: absolute;
-    z-index: 10;
-    width: 70px;
-    height: 70px;
-    top: 10px;
-    right: 10px;
-    font-size: 30px;
-    color: white;
-    border: none;
-    /* ===== 绿色基调渐变色 ===== */
-    background: linear-gradient(135deg, #38ef7d 0%, #00b894 100%);
-    background-size: 200% 200%;
-
-    /* ===== 绿色系四周发光 ===== */
-    box-shadow:
-        0 0 20px rgba(56, 239, 125, 0.5),
-        0 0 40px rgba(17, 153, 142, 0.3),
-        0 0 60px rgba(0, 184, 148, 0.2);
-
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+.info-tab {
+    width: 20%;        
+    min-width: 0;         /* 防内容把它撑宽 */
+    box-sizing: border-box;
+    height: 95%;
+    background-color: rgba(147, 168, 176, 0.7);
+    border-radius: 25px;
+    padding: 10px 30px;
+    margin-left: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
 }
-
-.plusbutton:hover {
-    transform: scale(1.1);
-    box-shadow:
-        0 0 30px rgba(56, 239, 125, 0.7),
-        0 0 60px rgba(17, 153, 142, 0.5),
-        0 0 90px rgba(0, 184, 148, 0.3);
-}
-
 </style>

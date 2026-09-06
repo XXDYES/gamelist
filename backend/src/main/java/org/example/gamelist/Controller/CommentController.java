@@ -17,6 +17,10 @@ public class CommentController {
     public Result<List<CommentVO>> selectComment(){
         return Result.success(commentService.selectComment());
     }
+    @GetMapping("/getfricomment")
+    public Result<List<CommentVO>> getFriComment(@RequestParam("friId") Integer friId){
+        return Result.success(commentService.getFriComment(friId));
+    }
     @PostMapping("/addcomment")
     public Result<?> addComment(@RequestBody AddCmtDTO dto){
         commentService.addComment(dto);

@@ -8,8 +8,10 @@ import org.example.gamelist.entity.User;
 import org.example.gamelist.exception.BusinessException;
 import org.example.gamelist.mapper.FriendMapper;
 import org.example.gamelist.mapper.FriendRequestMapper;
+import org.example.gamelist.mapper.GameMapper;
 import org.example.gamelist.mapper.UserMapper;
 import org.example.gamelist.vo.FriendVO;
+import org.example.gamelist.vo.GameVO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +25,8 @@ public class FriendService {
     private FriendRequestMapper friendRequestMapper;
     @Resource
     private UserMapper userMapper;
+    @Resource
+    private GameMapper gameMapper;
     public List<FriendVO> searchFriend(){
         return friendMapper.searchFriend(UserContext.getCurrentId());
     }
@@ -93,5 +97,14 @@ public class FriendService {
         if (rows <= 0){
             throw new BusinessException("该用户不是你的好友");
         }
+    }
+    public List<GameVO> getFriGame(Integer friId){
+        Integer count = friendMapper.countFriendship(UserContext.getCurrentId(),friId);
+        if(count>0){
+            return gameMapper.selectGamesByUserId(friId);
+        }else {throw new BusinessException("无权访问非好友主页");}
+    }
+    public User getFriInfo(Integer friId){
+        return userMapper.selectById(friId);
     }
 }

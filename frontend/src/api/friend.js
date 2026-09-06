@@ -21,5 +21,11 @@ export const friendApi = {
     },
     deleteFriend(id){
         return request.get('/deletefriend',{params: { id:id }})
+    },
+    getFriGame(friId){
+        return request.get('/getfrigame',{params:{friId:friId}})
+    },
+    getFriInfo(friId){
+        return request.get('/getfriinfo',{params:{friId:friId}})
     }
 }

@@ -7,6 +7,7 @@ import org.example.gamelist.entity.FriendRequest;
 import org.example.gamelist.entity.User;
 import org.example.gamelist.service.FriendService;
 import org.example.gamelist.vo.FriendVO;
+import org.example.gamelist.vo.GameVO;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -48,5 +49,13 @@ public class FriendController {
     public Result<?> deleteFriend(@RequestParam Integer id){
         friendService.deleteFriend(id);
         return Result.success();
+    }
+    @GetMapping("/getfrigame")
+    public Result<List<GameVO>> getFriGame(@RequestParam("friId")Integer friId){
+        return Result.success(friendService.getFriGame(friId));
+    }
+    @GetMapping("/getfriinfo")
+    public Result<User> getFriInfo(@RequestParam("friId")Integer friId){
+        return Result.success(friendService.getFriInfo(friId));
     }
 }

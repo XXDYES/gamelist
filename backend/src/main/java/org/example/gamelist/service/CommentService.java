@@ -18,6 +18,9 @@ public class CommentService {
     public List<CommentVO> selectComment(){
         return commentMapper.selectComments(UserContext.getCurrentId());
     }
+    public List<CommentVO> getFriComment(Integer friId){
+        return commentMapper.selectComments(friId);
+    }
     public void addComment(AddCmtDTO dto){
         if (dto.getGameId() == null) {
             throw new BusinessException("游戏不能为空");

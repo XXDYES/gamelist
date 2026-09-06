@@ -9,57 +9,66 @@
                     <span class="game-tag">🖥️:{{ game.platform }}</span>
                     <span class="game-tag">🕹️:{{ game.type }}</span>
                 </div>
-                <div @click.stop style="display: flex; align-items: center;">
+                <div @click.stop style="display: flex; align-items: center; flex: 0 0 auto; margin-left: auto;">
                     <el-rate v-model="game.rating" v-if="game.played != 0" :texts="['拉完了', '拉', 'NPC', '夯', '夯爆了']"
-                        size="large" show-text style="pointer-events: auto !important;" @change="setRating(game)" />
-                    <el-popover trigger="click" placement="left" :width="100" popper-class="status-popover">
-                        <el-radio-group v-model="playStatus"
-                            style="display: flex; flex-direction: column; align-items: flex-start; gap: 5px;">
-                            <el-radio :value="0">🕜️待玩</el-radio>
-                            <el-radio :value="1">✅️已玩</el-radio>
-                            <el-radio :value="2">❌️弃坑</el-radio>
-                        </el-radio-group>
-                        <div style="display: flex; justify-content: center; margin: 10px 0;">
-                            <el-button type="primary" @click="confirmStatus(game)">确认</el-button>
-                        </div>
-                        <template #reference>
-                            <el-button type="success" :icon="Select" circle style="width: 40px; height: 40px; font-size: 20px;margin-left: 6px;
+                        size="large" show-text style="pointer-events: auto !important;" @change="setRating(game)"
+                        :disabled="readonly" />
+                    <template v-if="!readonly">
+                        <el-popover trigger="click" placement="left" :width="100" popper-class="status-popover">
+                            <el-radio-group v-model="playStatus"
+                                style="display: flex; flex-direction: column; align-items: flex-start; gap: 5px;">
+                                <el-radio :value="0">🕜️待玩</el-radio>
+                                <el-radio :value="1">✅️已玩</el-radio>
+                                <el-radio :value="2">❌️弃坑</el-radio>
+                            </el-radio-group>
+                            <div style="display: flex; justify-content: center; margin: 10px 0;">
+                                <el-button type="primary" @click="confirmStatus(game)">确认</el-button>
+                            </div>
+                            <template #reference>
+                                <el-button type="success" :icon="Select" circle style="width: 40px; height: 40px; font-size: 20px;margin-left: 6px;
                                 pointer-events: auto !important;" @click="playStatus = game.played"></el-button>
-                        </template>
-                    </el-popover>
-                    <el-tooltip class="box-item" effect="dark" content="编辑信息" placement="top">
-                        <el-button type="primary" :icon="Edit" circle style="width: 40px; height: 40px; font-size: 20px;margin-left: 6px;
+                            </template>
+                        </el-popover>
+                        <el-tooltip class="box-item" effect="dark" content="编辑信息" placement="top">
+                            <el-button type="primary" :icon="Edit" circle style="width: 40px; height: 40px; font-size: 20px;margin-left: 6px;
                             pointer-events: auto !important;"
-                            @click="editDialog = true; editTarget = game"></el-button>
-                    </el-tooltip>
-                    <el-tooltip class="box-item" effect="dark" content="分享信息" placement="top">
-                        <el-button type="warning" :icon="Share" circle style="width: 40px; height: 40px; font-size: 20px;margin-left: 6px;
+                                @click="editDialog = true; editTarget = game"></el-button>
+                        </el-tooltip>
+                        <el-tooltip class="box-item" effect="dark" content="分享信息" placement="top">
+                            <el-button type="warning" :icon="Share" circle style="width: 40px; height: 40px; font-size: 20px;margin-left: 6px;
+                            pointer-events: auto !important;" @click="shareDialog=true,editTarget = game"></el-button>
+                        </el-tooltip>
+                        <el-tooltip class="box-item" effect="dark" content="删除信息" placement="top">
+                            <el-button type="danger" :icon="Delete" circle style="width: 40px; height: 40px; font-size: 20px;margin-left: 6px;
+                            pointer-events: auto !important;"
+                                @click="deleteDialog = true; deleteTarget = game"></el-button>
+                        </el-tooltip>
+                    </template>
+                    <template v-if="readonly">
+                        <el-tooltip class="box-item" effect="dark" content="请求共享" placement="top">
+                            <el-button type="warning" :icon="Collection" circle style="width: 40px; height: 40px; font-size: 20px;margin-left: 6px;
                             pointer-events: auto !important;"></el-button>
-                    </el-tooltip>
-                    <el-tooltip class="box-item" effect="dark" content="删除信息" placement="top">
-                        <el-button type="danger" :icon="Delete" circle style="width: 40px; height: 40px; font-size: 20px;margin-left: 6px;
-                            pointer-events: auto !important;"
-                            @click="deleteDialog = true; deleteTarget = game"></el-button>
-                    </el-tooltip>
+                        </el-tooltip>
+                    </template>
                 </div>
             </template>
             <div style="display: flex;gap: 10px;">
                 <span class="game-tag">💰:{{ game.price }}</span>
                 <span class="game-tag">MC评分:{{ game.mcRating }}</span>
                 <span class="game-tag">📅发售日期:{{ game.releaseDate }}</span>
-                <span class="game-tag">📅添加日期:{{ game.addDate }}</span>
+                <span class="game-tag">➕添加日期:{{ game.addDate }}</span>
             </div>
             <div class="divider-label">📖 游戏介绍</div>
             <div style="text-align: left;text-indent: 2em;">
                 <div style="text-indent: 2em;">{{ game.info }}</div>
             </div>
-            <div class="divider-label">💬 游戏评价</div>
+            <div class="divider-label">💬 游戏评价（{{ (comments[game.id] || []).length }}）</div>
             <div style="display: flex;align-items: stretch;gap: 10px;padding: 10px;">
                 <el-avatar :size="50" class="friend-avatar">
                     <span style="font-size: 20px;">{{ userStore.username.charAt(0) }}</span>
                 </el-avatar>
-                <el-input v-model="comment" placeholder="请输入评价(400字以内)" style="width: 80%;" :rows="2" class="message-input"
-                    type="textarea" />
+                <el-input v-model="comment" placeholder="请输入评价(400字以内)" style="width: 80%;" :rows="2"
+                    class="message-input" type="textarea" />
                 <div style="display: flex;flex-direction: column;">
                     <el-rate v-model="cmtrating" style="height: 12px;" />
                     <el-button style="flex: 1;width: 70%;margin: 3px auto 0 auto;color: #fff;
@@ -94,6 +103,7 @@
         </el-collapse-item>
     </el-collapse>
     <EditDialog v-model:visible="editDialog" :game="editTarget" @edit="emit('edit')" />
+    <ShareDialog v-model:visible="shareDialog" :game="editTarget"/>
     <el-dialog v-model="deleteDialog" class="delete-dialog" width="420" align-center append-to-body center>
         <template #header>
             <span class="delete-dialog-title">🗑️ 确认删除游戏</span>
@@ -116,16 +126,18 @@
 
 <script setup>
 import { ref } from 'vue'
-import { Select, Edit, Share, Delete } from '@element-plus/icons-vue'
+import { Select, Edit, Share, Delete,Collection} from '@element-plus/icons-vue'
 import { commentApi, gameApi } from '@/api'
 import { ElMessage } from 'element-plus'
 import EditDialog from './EditDialog.vue'
+import ShareDialog from './ShareDialog.vue'
 import { useUserStore } from '@/store/user'
 defineProps({
     games: { type: Array, default: () => [] },
-    comments: { type: Object, default: () => ({}) }
+    comments: { type: Object, default: () => ({}) },
+    readonly: { type: Boolean, default: false }
 })
-const emit = defineEmits(['change-status', 'delete', 'edit','addcmt'])
+const emit = defineEmits(['change-status', 'delete', 'edit', 'addcmt'])
 const userStore = useUserStore()
 const comment = ref('')
 const cmtrating = ref(0)
@@ -134,6 +146,7 @@ const playStatus = ref(0)
 const deleteDialog = ref(false)
 const deleteTarget = ref(null)
 const editDialog = ref(false)
+const shareDialog = ref(false)
 const editTarget = ref(null)
 const resetComment = () => {
     cmtrating.value = 0
@@ -166,21 +179,21 @@ const addComment = async (game) => {
             gameId: game.id, content: comment.value.trim(), rating: cmtrating.value
         })
         if (res.data.code === '200') {
-        ElMessage.success('评论成功')
-        comment.value = ''
-        cmtrating.value = 0
-        emit('addcmt')
-        }else{ElMessage.error(res.data.msg)}
-    }catch(e){ElMessage.error('网络错误，添加评论失败')}
+            ElMessage.success('评论成功')
+            comment.value = ''
+            cmtrating.value = 0
+            emit('addcmt')
+        } else { ElMessage.error(res.data.msg) }
+    } catch (e) { ElMessage.error('网络错误，添加评论失败') }
 }
-const deleteComment = async(id) => {
-    try{
+const deleteComment = async (id) => {
+    try {
         const res = await commentApi.deleteComment(id)
-        if(res.data.code === '200'){
+        if (res.data.code === '200') {
             ElMessage.success("删除评论成功")
             emit("addcmt")
-        }
-    }catch{ElMessage.error("网络异常，删除失败")}
+        }else{ElMessage.error("无权删除此评论")}
+    } catch { ElMessage.error("网络异常，删除失败") }
 }
 </script>
 
@@ -229,6 +242,8 @@ const deleteComment = async(id) => {
     display: flex;
     align-items: center;
     flex: 1;
+    min-width: 0;
+    /* 关键：title 自身可收缩，不允许内容把整行撑宽 */
     padding: 0;
     background: transparent;
 }
@@ -236,9 +251,46 @@ const deleteComment = async(id) => {
 .custom-collapse :deep(.el-collapse-item__title .itembox-content) {
     display: flex;
     align-items: center;
+    height: 40px;
     gap: 10px;
     flex: 1;
     width: 100%;
+    min-width: 0;
+    /* 关键：允许容器被压缩，溢出才会触发滚动 */
+    overflow-x: auto;
+    /* 开启水平滚动 */
+    overflow-y: hidden;
+    /* 显式锁死垂直方向，避免隐性 auto 冒出垂直滚动条 */
+    scrollbar-width: thin;
+    /* Firefox：显示细滚动条 */
+    scrollbar-color: rgba(0, 0, 0, 0.25) transparent;
+    pointer-events: auto;
+    /* header 是 pointer-events:none，需单独恢复滚动区的交互 */
+}
+
+.custom-collapse :deep(.el-collapse-item__title .itembox-content::-webkit-scrollbar) {
+    height: 2px;
+}
+
+.custom-collapse :deep(.el-collapse-item__title .itembox-content::-webkit-scrollbar-track) {
+    background: rgba(0, 0, 0, 0.06);
+    border-radius: 2px;
+}
+
+.custom-collapse :deep(.el-collapse-item__title .itembox-content::-webkit-scrollbar-thumb) {
+    background: rgba(0, 0, 0, 0.25);
+    border-radius: 2px;
+}
+
+.custom-collapse :deep(.el-collapse-item__title .itembox-content::-webkit-scrollbar-thumb:hover) {
+    background: rgba(0, 0, 0, 0.4);
+}
+
+.custom-collapse :deep(.el-collapse-item__title .itembox-content > *) {
+    flex-shrink: 0;
+    /* 每个标签保持自然宽度，堆出溢出 */
+    white-space: nowrap;
+    /* 文字内部不换行 */
 }
 
 .custom-collapse :deep(.el-collapse-item__arrow) {
@@ -266,7 +318,7 @@ const deleteComment = async(id) => {
     /* background: rgba(217, 255, 0, 0.35); */
     /* border: 1px solid rgba(0, 0, 0, 0.1);
     border-radius: 999px; */
-    padding: 2px 8px;
+    padding: 0 4px;
 }
 
 /* 悬停放大 */
