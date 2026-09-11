@@ -36,7 +36,7 @@
                         </el-tooltip>
                         <el-tooltip class="box-item" effect="dark" content="分享信息" placement="top">
                             <el-button type="warning" :icon="Share" circle style="width: 40px; height: 40px; font-size: 20px;margin-left: 6px;
-                            pointer-events: auto !important;" @click="shareDialog=true,editTarget = game"></el-button>
+                            pointer-events: auto !important;" @click="shareDialog = true, editTarget = game"></el-button>
                         </el-tooltip>
                         <el-tooltip class="box-item" effect="dark" content="删除信息" placement="top">
                             <el-button type="danger" :icon="Delete" circle style="width: 40px; height: 40px; font-size: 20px;margin-left: 6px;
@@ -89,13 +89,15 @@
                             <span style="font-size: 32px;line-height: 1;" class="gradient-text">{{ c.username }}</span>
                             <span style="font-size: 12px;line-height: 1.05;color: #9B9B9B ;white-space: nowrap;">{{
                                 c.createAt
-                            }}</span>
+                                }}</span>
                         </div>
                         <el-rate v-model="c.rating" disabled></el-rate>
                         <span style="text-align: start;">{{ c.content }}</span>
-                        <el-button type="danger" :icon="Delete" circle style="width: 40px; height: 40px;
-                         font-size: 20px;margin-left: auto;
+                        <template v-if="!readonly || c.userId == userStore.id">
+                            <el-button type="danger" :icon="Delete" circle style="width: 40px; height: 40px;
+                            font-size: 20px;margin-left: auto;
                             pointer-events: auto !important;" @click="deleteComment(c.id)"></el-button>
+                        </template>
                     </div>
                 </div>
             </div>
@@ -103,7 +105,7 @@
         </el-collapse-item>
     </el-collapse>
     <EditDialog v-model:visible="editDialog" :game="editTarget" @edit="emit('edit')" />
-    <ShareDialog v-model:visible="shareDialog" :game="editTarget"/>
+    <ShareDialog v-model:visible="shareDialog" :game="editTarget" />
     <el-dialog v-model="deleteDialog" class="delete-dialog" width="420" align-center append-to-body center>
         <template #header>
             <span class="delete-dialog-title">🗑️ 确认删除游戏</span>
@@ -126,19 +128,22 @@
 
 <script setup>
 import { ref } from 'vue'
-import { Select, Edit, Share, Delete,Collection} from '@element-plus/icons-vue'
+import { Select, Edit, Share, Delete, Collection } from '@element-plus/icons-vue'
 import { commentApi, gameApi } from '@/api'
 import { ElMessage } from 'element-plus'
 import EditDialog from './EditDialog.vue'
 import ShareDialog from './ShareDialog.vue'
 import { useUserStore } from '@/store/user'
-defineProps({
+import { messageApi } from '@/api/message.js'
+import { useRoute } from 'vue-router'
+const props = defineProps({
     games: { type: Array, default: () => [] },
     comments: { type: Object, default: () => ({}) },
     readonly: { type: Boolean, default: false }
 })
 const emit = defineEmits(['change-status', 'delete', 'edit', 'addcmt'])
 const userStore = useUserStore()
+const route = useRoute()
 const comment = ref('')
 const cmtrating = ref(0)
 const activeNames = ref('')
@@ -179,6 +184,7 @@ const addComment = async (game) => {
             gameId: game.id, content: comment.value.trim(), rating: cmtrating.value
         })
         if (res.data.code === '200') {
+            if(props.readonly){await messageApi.addCmtMessage({toId:route.params.id,gameId:game.id})}
             ElMessage.success('评论成功')
             comment.value = ''
             cmtrating.value = 0
@@ -192,7 +198,7 @@ const deleteComment = async (id) => {
         if (res.data.code === '200') {
             ElMessage.success("删除评论成功")
             emit("addcmt")
-        }else{ElMessage.error("无权删除此评论")}
+        } else { ElMessage.error("无权删除此评论") }
     } catch { ElMessage.error("网络异常，删除失败") }
 }
 </script>

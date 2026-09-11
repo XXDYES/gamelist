@@ -25,4 +25,15 @@ public class MessageController {
     public Result<List<MessageVO>> getMessage(){
         return Result.success(messageService.getMessage());
     }
+    @GetMapping("/addcmtmessage")
+    public Result<?> addCmtMessage(@RequestParam("toId")Integer toId,
+                                   @RequestParam("gameId")Integer gameId){
+        messageService.addCmtMessage(toId,gameId);
+        return Result.success();
+    }
+    @GetMapping("/comfirmmessage")
+    public Result<?> comfirmMessage(@RequestParam("infoId")Integer infoId){
+        messageService.comfirmMessage(infoId);
+        return Result.success();
+    }
 }

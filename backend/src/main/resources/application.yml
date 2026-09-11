@@ -41,8 +41,8 @@ ai:
   api:
     url: https://api.deepseek.com/chat/completions
     key: ${APIKEY_GAME}
-    model: deepseek-v4-flash
-    max-tokens: 2000
+    model: deepseek-flash
+    max-tokens: 6000
     temperature: 0.3
 
 rest:

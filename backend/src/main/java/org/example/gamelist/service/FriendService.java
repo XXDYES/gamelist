@@ -4,12 +4,10 @@ import jakarta.annotation.Resource;
 import org.example.gamelist.common.UserContext;
 import org.example.gamelist.entity.Friend;
 import org.example.gamelist.entity.FriendRequest;
+import org.example.gamelist.entity.Message;
 import org.example.gamelist.entity.User;
 import org.example.gamelist.exception.BusinessException;
-import org.example.gamelist.mapper.FriendMapper;
-import org.example.gamelist.mapper.FriendRequestMapper;
-import org.example.gamelist.mapper.GameMapper;
-import org.example.gamelist.mapper.UserMapper;
+import org.example.gamelist.mapper.*;
 import org.example.gamelist.vo.FriendVO;
 import org.example.gamelist.vo.GameVO;
 import org.springframework.stereotype.Service;
@@ -27,6 +25,8 @@ public class FriendService {
     private UserMapper userMapper;
     @Resource
     private GameMapper gameMapper;
+    @Resource
+    private MessageMapper messageMapper;
     public List<FriendVO> searchFriend(){
         return friendMapper.searchFriend(UserContext.getCurrentId());
     }
@@ -50,6 +50,13 @@ public class FriendService {
         newFriend.setUserId(UserContext.getCurrentId());
         newFriend.setFriendId(req.getFromId());
         friendMapper.insert(newFriend);
+        Message msg = new Message();
+        msg.setToId(req.getFromId());      // 通知申请人（B 已成为 A 的好友）
+        msg.setFromId(UserContext.getCurrentId());
+        msg.setType(3);
+        msg.setStatus(0);
+        msg.setMessage("成为了你的好友");
+        messageMapper.insert(msg);
     }
     @Transactional
     public void rejectQuest(Integer infoId){
@@ -64,6 +71,13 @@ public class FriendService {
         if (rows <= 0){
             throw new BusinessException("该申请已处理");
         }
+        Message msg = new Message();
+        msg.setToId(req.getFromId());      // 通知申请人（B 已成为 A 的好友）
+        msg.setFromId(UserContext.getCurrentId());
+        msg.setType(3);
+        msg.setStatus(0);
+        msg.setMessage("拒绝了你的好友申请");
+        messageMapper.insert(msg);
     }
     public User searchUser(String name){
         User user = userMapper.selectByUsername(name);
@@ -96,6 +110,13 @@ public class FriendService {
         int rows = friendMapper.deleteFriend(UserContext.getCurrentId(),id);
         if (rows <= 0){
             throw new BusinessException("该用户不是你的好友");
+        }else{
+            Message msg = new Message();
+            msg.setToId(id);
+            msg.setFromId(UserContext.getCurrentId());
+            msg.setType(3);
+            msg.setMessage("删除了你的好友");
+            messageMapper.insert(msg);
         }
     }
     public List<GameVO> getFriGame(Integer friId){

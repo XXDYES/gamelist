@@ -41,7 +41,7 @@
                         <el-button type="danger" size="small" round class="friend-btn-del" style="margin-left: 5px;"
                             @click="rejectQuest(fq.id)">拒绝</el-button>
                     </div>
-                    <div style="color: #fff;margin-left: 15px;">留言：{{ fq.message }}</div>
+                    <div class="friend-msg">💬 留言：{{ fq.message || '无' }}</div>
                 </div>
             </el-tab-pane>
             <el-tab-pane label="添加好友" name="third">
@@ -267,6 +267,14 @@ onBeforeUnmount(() => {
     font-size: 10px;
     color: rgba(255, 255, 255, 0.45);
     white-space: nowrap;
+}
+
+.friend-msg {
+    flex: 1 1 100%;           /* 独占第二行 */
+    margin-left: 52px;        /* 头像40 + gap12，与正文左对齐 */
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.6);
+    word-break: break-word;
 }
 
 .friend-actions {

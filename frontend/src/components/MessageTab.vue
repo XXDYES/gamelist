@@ -6,11 +6,11 @@
                     <Message />
                 </el-icon>
                 <el-badge :value="messageList.length" :offset="[-19, 2]" :max="10" :show-zero="false">
-                    <span style="margin: 0 25px 0 5px;color: #fff;">消息</span>                   
+                    <span style="margin: 0 25px 0 5px;color: #fff;">消息</span>
                 </el-badge>
             </div>
         </template>
-        <div class="msg-title">📨 消息列表</div>
+        <div class="msg-title">📬 消息列表</div>
         <div v-if="messageList.length" class="msg-list">
             <div v-for="msg in messageList" :key="msg.id" class="msg-item">
                 <!-- type=2：分享游戏，带同意/拒绝 -->
@@ -35,17 +35,45 @@
                         <span class="msg-time">{{ msg.createAt }}</span>
                     </div>
                 </div>
-                <!-- type=1：文本通知 -->
-                <div v-else class="msg-card msg-card-text">
-                    <el-avatar :size="40" class="friend-avatar">{{ msg.userName?.charAt(0) || '?' }}</el-avatar>
-                    <div class="msg-info">
-                        <div class="msg-name-row">
-                            <span class="msg-name">{{ msg.userName }}</span>
+                <!-- type=3：文本通知 -->
+                <div v-if="msg.type == 3" class="msg-card">
+                    <div class="msg-card-head">
+                        <el-avatar :size="40" class="friend-avatar">{{ msg.userName?.charAt(0) || '?' }}</el-avatar>
+                        <div class="msg-info">
+                            <div class="msg-name-row">
+                                <span class="msg-name">{{ msg.userName }}</span>
+                            </div>
+                            <div class="msg-content">{{ msg.message }}</div>
                         </div>
-                        <div class="msg-content">{{ msg.message }}</div>
-                        <div class="msg-footer">
-                            <span class="msg-time">{{ msg.createAt }}</span>
+                        <div class="msg-actions">
+                            <el-button round class="friend-btn-main msg-confirm-btn" 
+                            @click="comfirmMsg(msg.id)">确认</el-button>
                         </div>
+                    </div>
+                    <div class="msg-footer">
+                        <span class="msg-time">{{ msg.createAt }}</span>
+                    </div>
+                </div>
+                <!-- 评论通知 -->
+                <div v-if="msg.type == 4" class="msg-card">
+                    <div class="msg-card-head">
+                        <el-avatar :size="40" class="friend-avatar">{{ msg.userName?.charAt(0) || '?' }}</el-avatar>
+                        <div class="msg-info">
+                            <div class="msg-name-row">
+                                <span class="msg-name">{{ msg.userName }}</span>
+                            </div>
+                            <div class="msg-content">
+                                {{ msg.message }}
+                                <span class="msg-game">🎮 {{ msg.gameName }}</span>
+                            </div>
+                        </div>
+                        <div class="msg-actions">
+                            <el-button round class="friend-btn-main msg-confirm-btn" 
+                            @click="comfirmMsg(msg.id)">确认</el-button>
+                        </div>
+                    </div>
+                    <div class="msg-footer">
+                        <span class="msg-time">{{ msg.createAt }}</span>
                     </div>
                 </div>
             </div>
@@ -65,11 +93,20 @@ const getMessage = async () => {
         messageList.value = res.data.data
     } else { ElMessage.error('获取消息列表失败') }
 }
+const comfirmMsg = async (infoId) => {
+    try {
+        const res = await messageApi.comfirmMessage(infoId)
+        if (res.data.code == '200') {
+            ElMessage.success("消息已确认")
+            getMessage()
+        } else (ElMessage.error("服务器异常"))
+    }catch(e){ElMessage.error("服务器异常")}
+}
 let pollTimer = null
 const startPoll = () => {
     pollTimer = setInterval(() => {
         getMessage()
-    },170000)
+    }, 170000)
 }
 const stopPoll = () => {
     if (pollTimer) {
@@ -101,7 +138,7 @@ onBeforeUnmount(() => {
 
 .message-popover .msg-title {
     padding: 4px 6px 10px;
-    font-size: 15px;
+    font-size: 20px;
     font-weight: 600;
     color: rgba(255, 255, 255, 0.9);
     border-bottom: 1px solid rgba(255, 255, 255, 0.12);
@@ -113,7 +150,8 @@ onBeforeUnmount(() => {
     min-height: 0;
     overflow-y: auto;
     overflow-x: hidden;
-    scrollbar-width: thin;                        /* Firefox 细滚动条 */
+    scrollbar-width: thin;
+    /* Firefox 细滚动条 */
     scrollbar-color: rgba(255, 255, 255, 0.25) transparent;
 }
 
@@ -159,12 +197,6 @@ onBeforeUnmount(() => {
     gap: 12px;
 }
 
-.message-popover .msg-card-text {
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-}
-
 .message-popover .msg-info {
     flex: 1;
     min-width: 0;
@@ -193,12 +225,13 @@ onBeforeUnmount(() => {
 
 .message-popover .msg-content {
     margin-top: 4px;
-    font-size: 15px;
+    font-size: 18px;
     color: rgba(255, 255, 255, 0.75);
     line-height: 1.5;
     word-break: break-word;
 }
 
+/* 正文与确认按钮同一行 */
 .message-popover .msg-game {
     color: #7ee8fa;
     font-weight: 600;
@@ -210,17 +243,21 @@ onBeforeUnmount(() => {
     flex-shrink: 0;
 }
 
-.message-popover .msg-actions .el-button + .el-button {
-    margin-left: 0;   /* 覆盖 Element Plus 相邻按钮默认 12px 间距 */
+.message-popover .msg-actions .el-button+.el-button {
+    margin-left: 0;
+    /* 覆盖 Element Plus 相邻按钮默认 12px 间距 */
 }
 
+
 .message-popover .msg-note {
-    font-size: 15px;               /* 留言字号 */
+    font-size: 15px;
+    /* 留言字号 */
     color: rgba(255, 255, 255, 0.65);
     word-break: break-word;
     flex: 1;
     min-width: 0;
-    margin-left: 52px;             /* 与"向你推荐"同一列（头像40+间距12） */
+    margin-left: 52px;
+    /* 与"向你推荐"同一列（头像40+间距12） */
 }
 
 .message-popover .msg-footer {
@@ -232,11 +269,30 @@ onBeforeUnmount(() => {
     padding-right: 0;
 }
 
+/* 只有时间一项时推到右侧（对齐 type=2 卡片） */
+.message-popover .msg-footer>.msg-time:only-child {
+    margin-left: auto;
+}
+
 .message-popover .msg-empty {
     flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
     color: rgba(255, 255, 255, 0.4);
+}
+
+/* 确认按钮：蓝色主题（覆盖 friend-btn-main 的绿色） */
+.message-popover .msg-confirm-btn.el-button {
+    border: none;
+    background: linear-gradient(120deg, #3a7bd5, #00d2ff) !important;
+    color: #fff;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.message-popover .msg-confirm-btn.el-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 0 16px rgba(0, 210, 255, 0.65);
+    /* 悬停蓝色发光 */
 }
 </style>

@@ -36,4 +36,19 @@ public class MessageService {
     public List<MessageVO> getMessage(){
         return messageMapper.getMessages(UserContext.getCurrentId());
     }
+    public void addCmtMessage(Integer toId,Integer gameId){
+        Message msg = new Message();
+        msg.setFromId(UserContext.getCurrentId());
+        msg.setToId(toId);
+        msg.setType(4);
+        msg.setGameId(gameId);
+        msg.setMessage("评论了你的游戏");
+        messageMapper.insert(msg);
+    }
+    public void comfirmMessage(Integer infoId){
+        Message msg = new Message();
+        msg.setId(infoId);
+        msg.setStatus(1);
+        messageMapper.updateById(msg);
+    }
 }

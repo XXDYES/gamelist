@@ -13,7 +13,7 @@ public interface MessageMapper extends BaseMapper<Message> {
             "m.message, m.type, m.create_at " +
             "FROM messages m " +
             "JOIN users u ON u.id = m.from_id " +
-            "JOIN games g ON m.game_id = g.id " +
+            "LEFT JOIN games g ON m.game_id = g.id " +
             "WHERE m.to_id = #{toId} AND m.status = 0 " +
             "ORDER BY m.id DESC")
     List<MessageVO> getMessages(@Param("toId") Integer toId);
