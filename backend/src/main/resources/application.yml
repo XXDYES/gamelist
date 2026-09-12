@@ -40,10 +40,14 @@ mybatis-plus:
 ai:
   api:
     url: https://api.deepseek.com/chat/completions
+    base-url: ${AI_BASE_URL:https://api.deepseek.com}
     key: ${APIKEY_GAME}
-    model: deepseek-flash
+    model: deepseek-v4-pro
     max-tokens: 6000
     temperature: 0.3
+    http:
+      connect-timeout: 5000
+      read-timeout: 60000
 
 rest:
   template:

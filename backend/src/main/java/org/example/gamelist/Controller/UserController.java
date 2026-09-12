@@ -1,6 +1,7 @@
 package org.example.gamelist.Controller;
 
 import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
 import org.example.gamelist.common.JwtUtil;
 import org.example.gamelist.common.Result;
 import org.example.gamelist.common.UserContext;
@@ -9,6 +10,7 @@ import org.example.gamelist.exception.BusinessException;
 import org.example.gamelist.service.LoginService;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @RestController
 public class UserController {
     @Resource
@@ -21,13 +23,12 @@ public class UserController {
         try {
             // 1. 调用 Service 登录，返回 User 对象
             User dbUser = loginService.login(user);
-
+            log.info(String.format("%s登录了",dbUser.getUsername()));
             // 2. 生成 JWT Token
             String token = jwtUtil.generateToken(dbUser);
 
             // 3. 返回 Token（String 类型）
             return Result.success(token);  // ✅ Result<String>
-
         } catch (BusinessException e) {
             return Result.error(e.getMsg());
         }
