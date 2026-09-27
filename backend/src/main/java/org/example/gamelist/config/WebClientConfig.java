@@ -10,6 +10,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.netty.http.client.HttpClient;
+import reactor.netty.resources.ConnectionProvider;
 
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
@@ -31,7 +32,14 @@ public class WebClientConfig {
 
     @Bean
     public WebClient aiWebClient(WebClient.Builder builder) {
-        HttpClient httpClient = HttpClient.create()
+        // 连接池：空闲超过 20s 的连接不再复用。
+        ConnectionProvider provider = ConnectionProvider.builder("ai")
+                .maxIdleTime(Duration.ofSeconds(20))
+                .maxLifeTime(Duration.ofMinutes(10))
+                .evictInBackground(Duration.ofSeconds(30))
+                .build();
+
+        HttpClient httpClient = HttpClient.create(provider)
                 // TCP 建连超时
                 .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, connectTimeout)
                 // 等响应的间隔超时。非流式请求下，它就是"整个请求最多等多久"

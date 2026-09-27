@@ -16,7 +16,8 @@
                 <el-tooltip class="box-item" effect="dark" placement="right-start">
                     <template #content>
                         <div>输入名称后，AI自动生成剩下信息。</div>
-                        <div>⚠注：使用deepseek-v4-pro模型。</div>
+                        <div>⚠注：使用deepseek-v4-flash模型。</div>
+                        <div>token很贵😭，每天限100次生成</div>
                         <div>返回数据大概需要5-15s。</div>
                         <div>AI返回的数据可能不准确，可手动修改。</div>
                         <div>点击还有可爱的猫咪特效🩷，可通过开关控制。</div>

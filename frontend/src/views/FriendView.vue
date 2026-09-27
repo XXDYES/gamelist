@@ -12,10 +12,7 @@
                 正在访问好友主页🏠...
             </div>
             <div style="margin-left: auto;display: flex;align-items: center;">
-                <el-icon :size="20" style="color: white;">
-                    <Message />
-                </el-icon>
-                <span style="margin: 0 25px 0 5px;color: #fff;">消息</span>
+                <MessageTab @accept-share="fetchGameList"/>
                 <FriendTab />
                 <el-avatar :size="35"> user </el-avatar><span
                     style="color: white;margin: 0 20px 0 10px;font-size: large;">{{
@@ -29,9 +26,12 @@
                     <span style="font-size: 60px;">{{ (friInfo.username || '?').charAt(0) }}</span>
                 </el-avatar>
                 <span style="font-size: 50px;">{{ friInfo.username }}</span>
-                <span style="font-size: 20px;">个性签名：{{ friInfo.signature || '无' }}</span>
-                <div style="flex: 1;background-color: rgba(131, 167, 181, 0.8); width: 100%;border-radius: 20px;">
-                    <span style="font-size: 30px;">拓展功能区</span>
+                <div class="signature-card" :class="{ 'is-empty': !friInfo.signature }">
+                    个性签名：{{ friInfo.signature || '这位玩家很神秘，还没写签名' }}
+                </div>
+                <div style="flex: 1;background-color: rgba(131, 167, 181, 0.8); width: 100%;border-radius: 20px;box-sizing: border-box;padding: 10px;">
+                    <span style="font-size: 24px;color: white;">游戏总数：{{ gamelist.length }}</span>
+                    <div ref="ringRef" style="width: 100%; height: 210px;"></div>
                 </div>
             </div>
             <div class="list_container">
@@ -102,11 +102,13 @@
 </template>
 <script setup>
 import { Back, Plus, Search, Sort, Menu, User, Message } from '@element-plus/icons-vue'
-import { computed, onMounted, reactive, ref } from 'vue';
+import { computed, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue';
 import { ElMessage } from 'element-plus'
 import WallpaperSwitch from '@/components/WallpaperSwitch.vue';
 import GameCardList from '@/components/GameCardList.vue';
 import FriendTab from '@/components/FriendTab.vue';
+import MessageTab from '@/components/MessageTab.vue';
+import echarts from '@/utils/echart'
 import 'element-plus/dist/index.css'
 import router from '@/router';
 import { userApi, gameApi, commentApi, friendApi } from '@/api'
@@ -236,6 +238,57 @@ const playedgames = computed(() => {
 const giveupgames = computed(() => {
     return sortedgames.value.filter(game => game.played === 2)
 })
+
+// ===== 拓展功能区：游戏状态环形图 =====
+// 直接统计 gamelist（不走 filteredgames），否则一搜索饼图就跟着变
+const ringRef = ref(null)
+let ring = null
+let ringObserver = null
+const ringData = computed(() => [
+    { value: gamelist.value.filter(g => g.played === 0).length, name: '待玩' },
+    { value: gamelist.value.filter(g => g.played === 1).length, name: '已玩' },
+    { value: gamelist.value.filter(g => g.played === 2).length, name: '弃坑' }
+])
+const renderRing = () => {
+    if (!ring) return
+    ring.setOption({
+        // 与三个状态 tab 的配色一致：待玩 / 已玩 / 弃坑
+        color: ['#6b89ff', '#70ff6b', '#ff6b6b'],
+        legend: {
+            bottom: 0, icon: 'circle', itemWidth: 8, itemHeight: 8,
+            textStyle: { color: '#fff', fontSize: 12 }
+        },
+        series: [{
+            type: 'pie',
+            radius: ['42%', '78%'],          // 内外半径差 = 环的粗细
+            center: ['50%', '46%'],          // 标题已移到图外，环可以居中放
+            itemStyle: { borderRadius: 6, borderColor: 'rgba(0,0,0,.15)', borderWidth: 2 },
+            label: { show: false, position: 'center' },
+            labelLine: { show: false },
+            // 悬停时在环心显示当前查看的分类
+            emphasis: {
+                label: {
+                    show: true, formatter: '{b}\n{c} 款',
+                    fontSize: 15, fontWeight: 'bold',
+                    color: '#fff', lineHeight: 20
+                }
+            },
+            data: ringData.value
+        }]
+    }, true)
+}
+watch(ringData, renderRing)
+onMounted(() => {
+    ring = echarts.init(ringRef.value)
+    renderRing()
+    ringObserver = new ResizeObserver(() => ring && ring.resize())
+    ringObserver.observe(ringRef.value)
+})
+onBeforeUnmount(() => {
+    ringObserver?.disconnect()
+    ring?.dispose()
+    ring = null
+})
 </script>
 <style scoped>
 :global(html),
@@ -290,6 +343,8 @@ const giveupgames = computed(() => {
     min-height: 0;
     /* ✅ 允许 flex 收缩 */
     padding-top: 5px;
+    /* 始终给滚动条留出宽度，列表在"不滚动/滚动"之间切换时卡片不会左右跳 */
+    scrollbar-gutter: stable;
 }
 
 .custom-tabs :deep(.el-tabs__content::-webkit-scrollbar) {
@@ -429,4 +484,32 @@ const giveupgames = computed(() => {
     gap: 10px;
     align-items: center;
 }
+
+.signature-card {
+    width: 100%;
+    box-sizing: border-box;
+    background-color: rgba(255, 255, 255, 0.14);
+    border-left: 3px solid rgba(255, 255, 255, 0.55);
+    border-radius: 12px;
+    padding: 10px 14px;
+    font-size: 16px;
+    line-height: 1.65;
+    color: rgba(255, 255, 255, 0.95);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.22);
+    word-break: break-word;
+}
+
+.signature-card::before {
+    content: "“";
+    font-size: 22px;
+    line-height: 0;
+    margin-right: 2px;
+    opacity: 0.7;
+}
+
+.signature-card.is-empty {
+    color: rgba(255, 255, 255, 0.6);
+    font-style: italic;
+}
+
 </style>

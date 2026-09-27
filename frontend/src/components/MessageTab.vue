@@ -13,6 +13,29 @@
         <div class="msg-title">📬 消息列表</div>
         <div v-if="messageList.length" class="msg-list">
             <div v-for="msg in messageList" :key="msg.id" class="msg-item">
+                <!-- type=1：申请共享游戏，带同意/拒绝 -->
+                <div v-if="msg.type == 1" class="msg-card">
+                    <div class="msg-card-head">
+                        <el-avatar :size="40" class="friend-avatar">{{ msg.userName?.charAt(0) || '?' }}</el-avatar>
+                        <div class="msg-info">
+                            <div class="msg-name-row">
+                                <span class="msg-name">{{ msg.userName }}</span>
+                            </div>
+                            <div class="msg-content">
+                                向你申请共享：<span class="msg-game">🎮 {{ msg.gameName }}</span>
+                            </div>
+                        </div>
+                        <div class="msg-actions">
+                            <el-button round class="friend-btn-main"
+                            @click="acceptApply(msg.id)">同意</el-button>
+                            <el-button round class="friend-btn-del" 
+                            @click="rejectApply(msg.id)">拒绝</el-button>
+                        </div>
+                    </div>
+                    <div class="msg-footer">
+                        <span class="msg-time">{{ msg.createAt }}</span>
+                    </div>
+                </div>
                 <!-- type=2：分享游戏，带同意/拒绝 -->
                 <div v-if="msg.type == 2" class="msg-card">
                     <div class="msg-card-head">
@@ -26,8 +49,10 @@
                             </div>
                         </div>
                         <div class="msg-actions">
-                            <el-button round class="friend-btn-main">同意</el-button>
-                            <el-button round class="friend-btn-del">拒绝</el-button>
+                            <el-button round class="friend-btn-main"
+                            @click="acceptShare(msg.id)">同意</el-button>
+                            <el-button round class="friend-btn-del" 
+                            @click="rejectShare(msg.id)">拒绝</el-button>
                         </div>
                     </div>
                     <div class="msg-footer">
@@ -43,7 +68,10 @@
                             <div class="msg-name-row">
                                 <span class="msg-name">{{ msg.userName }}</span>
                             </div>
-                            <div class="msg-content">{{ msg.message }}</div>
+                            <div class="msg-content">
+                                {{ msg.message }}
+                                <span v-if="msg.gameId" class="msg-game">🎮 {{ msg.gameName }}</span>
+                            </div>
                         </div>
                         <div class="msg-actions">
                             <el-button round class="friend-btn-main msg-confirm-btn" 
@@ -86,6 +114,7 @@ import { messageApi } from '@/api/message';
 import { Message } from '@element-plus/icons-vue';
 import { ElMessage } from 'element-plus';
 import { onBeforeUnmount, onMounted, ref } from 'vue';
+const emit = defineEmits(["acceptShare"])
 const messageList = ref([])
 const getMessage = async () => {
     const res = await messageApi.getMessage()
@@ -99,8 +128,45 @@ const comfirmMsg = async (infoId) => {
         if (res.data.code == '200') {
             ElMessage.success("消息已确认")
             getMessage()
-        } else (ElMessage.error("服务器异常"))
-    }catch(e){ElMessage.error("服务器异常")}
+        } else { ElMessage.error(res.data.msg || "服务器异常") }
+    }catch(e){ElMessage.error("网络异常")}
+}
+const acceptShare = async(infoId) => {
+    try {
+        const res = await messageApi.acceptShare(infoId)
+        if(res.data.code == "200"){
+            ElMessage.success("已同意分享")
+            getMessage()
+            emit("acceptShare")
+        }else{ElMessage.error(res.data.msg || "服务器异常")}
+    }catch(e){ElMessage.error("网络异常")}
+}
+const rejectShare = async(infoId) =>{
+    try {
+        const res = await messageApi.rejectShare(infoId)
+        if(res.data.code == "200"){
+            ElMessage.success("已拒绝分享")
+            getMessage()
+        }else{ElMessage.error(res.data.msg || "服务器异常")}
+    }catch(e){ElMessage.error("网络异常")}
+}
+const acceptApply = async(infoId) => {
+    try {
+        const res = await messageApi.acceptApply(infoId)
+        if (res.data.code == '200') {
+            ElMessage.success("已同意申请")
+            getMessage()
+        } else { ElMessage.error(res.data.msg || "服务器异常") }
+    }catch(e){ElMessage.error("网络异常")}
+}
+const rejectApply = async(infoId) => {
+    try {
+        const res = await messageApi.rejectApply(infoId)
+        if (res.data.code == '200') {
+            ElMessage.success("已拒绝申请")
+            getMessage()
+        } else { ElMessage.error(res.data.msg || "服务器异常") }
+    }catch(e){ElMessage.error("网络异常")}
 }
 let pollTimer = null
 const startPoll = () => {

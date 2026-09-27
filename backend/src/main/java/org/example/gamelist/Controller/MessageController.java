@@ -36,4 +36,30 @@ public class MessageController {
         messageService.comfirmMessage(infoId);
         return Result.success();
     }
+    @GetMapping("/rejectshare")
+    public Result<?> rejectShare(@RequestParam("infoId")Integer infoId){
+        messageService.rejectShare(infoId);
+        return Result.success();
+    }
+    @GetMapping("/acceptshare")
+    public Result<?> acceptShare(@RequestParam("infoId")Integer infoId){
+        messageService.acceptShare(infoId);
+        return Result.success();
+    }
+    @GetMapping("/applyshare")
+    public Result<?> applyShare(@RequestParam("toId")Integer toId,
+                                @RequestParam("gameId")Integer gameId){
+        messageService.applyShare(toId,gameId);
+        return Result.success();
+    }
+    @GetMapping("/acceptapply")
+    public Result<?> acceptApply(@RequestParam("infoId")Integer infoId){
+        messageService.acceptApply(infoId);
+        return Result.success();
+    }
+    @GetMapping("rejectapply")
+    public Result<?> rejectApply(@RequestParam("infoId")Integer infoId){
+        messageService.rejectApply(infoId);
+        return Result.success();
+    }
 }

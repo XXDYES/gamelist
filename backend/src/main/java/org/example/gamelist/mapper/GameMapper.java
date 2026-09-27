@@ -16,4 +16,12 @@ public interface GameMapper extends BaseMapper<Game> {
             "INNER JOIN user_game ug ON g.id = ug.game_id " +
             "WHERE ug.user_id = #{userId}")
     List<GameVO> selectGamesByUserId(@Param("userId") Integer userId);
+
+    /** 只取游戏名和评分，供 AI 提示词里的游戏库使用 */
+    @Select("SELECT g.name, ug.rating " +
+            "FROM games g " +
+            "INNER JOIN user_game ug ON g.id = ug.game_id " +
+            "WHERE ug.user_id = #{userId} " +
+            "ORDER BY ug.rating DESC")
+    List<GameVO> selectGameBriefByUserId(@Param("userId") Integer userId);
 }

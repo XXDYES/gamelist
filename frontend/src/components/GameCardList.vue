@@ -47,7 +47,7 @@
                     <template v-if="readonly">
                         <el-tooltip class="box-item" effect="dark" content="请求共享" placement="top">
                             <el-button type="warning" :icon="Collection" circle style="width: 40px; height: 40px; font-size: 20px;margin-left: 6px;
-                            pointer-events: auto !important;"></el-button>
+                            pointer-events: auto !important;" @click="applyShare(game.id)"></el-button>
                         </el-tooltip>
                     </template>
                 </div>
@@ -200,6 +200,14 @@ const deleteComment = async (id) => {
             emit("addcmt")
         } else { ElMessage.error("无权删除此评论") }
     } catch { ElMessage.error("网络异常，删除失败") }
+}
+const applyShare = async(gameId) => {
+    try{
+        const res = await messageApi.applyShare(route.params.id,gameId)
+        if(res.data.code === '200'){
+            ElMessage.success("申请成功")
+        }else{ElMessage.error(res.data.msg)}
+    }catch{ElMessage.error("网络异常")}
 }
 </script>
 

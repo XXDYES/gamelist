@@ -1,5 +1,12 @@
 <template>
     <div class="bg" :style="{ backgroundImage: `url(${curbgurl})` }">
+        <!-- AI 助手入口：右侧垂直居中悬浮球 -->
+        <el-tooltip content="AI 游戏助手:主机龙" placement="top" :disabled="drawerVisible">
+            <div class="ai-entry" @click="drawerVisible = true">
+                <img :src="thinkingImg" alt="AI 助手" />
+            </div>
+        </el-tooltip>
+        <ChatDrawer v-model:visible="drawerVisible"/>
         <div class="pagehead">
             <div style="margin-right: auto;display: flex;align-items: center;">
                 <el-icon :size="35" style="color:white;cursor: pointer;margin: auto 15px;" @click="loginout">
@@ -12,7 +19,7 @@
                 GAMELIST V1.0
             </div>
             <div style="margin-left: auto;display: flex;align-items: center;">
-                <MessageTab/>
+                <MessageTab @accept-share="fetchGameList"/>
                 <FriendTab/>
                 <el-avatar :size="35"> user </el-avatar><span style="color: white;margin: 0 20px 0 10px;font-size: large;">{{
                     userStore.username || '未登录' }}</span>
@@ -26,7 +33,8 @@
             </el-tooltip>
             <div style="display: flex;justify-content: center;gap: 5px;">
                 <el-input v-model="inputword" class="search-input" style="width: 500px;height: 40px;"
-                    placeholder="输入 名称/制作商/平台/类型 搜索..." :prefix-icon="Search" clearable @clear="clearkeyword" />
+                    placeholder="输入 名称/制作商/平台/类型 搜索..." :prefix-icon="Search" clearable 
+                    @clear="clearkeyword" @keyup.enter="clicksearch"/>
                 <el-button type="primary" circle :icon="Search" style="width: 40px;height: 40px;font-size: 20px;"
                     @click="clicksearch">
                 </el-button>
@@ -97,10 +105,12 @@ import AddGameDialog from '@/components/AddGameDialog.vue';
 import GameCardList from '@/components/GameCardList.vue';
 import FriendTab from '@/components/FriendTab.vue';
 import MessageTab from '@/components/MessageTab.vue';
+import ChatDrawer from '@/components/ChatDrawer.vue';
 import 'element-plus/dist/index.css'
 import router from '@/router';
 import { userApi, gameApi, commentApi } from '@/api'
 import { useUserStore } from '@/store/user'
+import thinkingImg from '@/assets/naiwa_thinking.png'
 const userStore = useUserStore()
 const bglist = [
     require('@/assets/re9.jpg'),
@@ -118,6 +128,7 @@ const sortField = ref('addDate')
 const sortOrder = ref('desc')
 const sortPopVisible = ref(false)
 const comments = ref({})
+const drawerVisible = ref(false)
 const getComment = async() => {
     const res = await commentApi.getComment()
     if(res.data.code === '200'){
@@ -287,6 +298,8 @@ const giveupgames = computed(() => {
     min-height: 0;
     /* ✅ 允许 flex 收缩 */
     padding-top: 5px;
+    /* 始终给滚动条留出宽度，列表在"不滚动/滚动"之间切换时卡片不会左右跳 */
+    scrollbar-gutter: stable;
 }
 
 .custom-tabs :deep(.el-tabs__content::-webkit-scrollbar) {
@@ -443,6 +456,63 @@ const giveupgames = computed(() => {
         0 0 30px rgba(56, 239, 125, 0.7),
         0 0 60px rgba(17, 153, 142, 0.5),
         0 0 90px rgba(0, 184, 148, 0.3);
+}
+
+/* ===== AI 助手入口：右侧垂直居中悬浮球 ===== */
+.ai-entry {
+    position: fixed;
+    right: 12px;
+    /* top/bottom + margin auto 做垂直居中，把 transform 留给 hover 动画 */
+    top: 0;
+    bottom: 0;
+    margin-block: auto;
+    z-index: 1000;
+    width: 104px;
+    height: 104px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    /* 和页面面板同色，这是"融入"的关键 */
+    background: rgba(147, 168, 176, 0.7);
+    backdrop-filter: blur(6px);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
+    transition: transform .25s ease, box-shadow .25s ease, background .25s ease;
+    /* 注意：不加 both/forwards，否则动画会一直占着 transform，hover 上浮会失效 */
+    animation: aiEntryIn .5s ease;
+}
+
+.ai-entry img {
+    width: 84%;
+    height: 84%;
+    object-fit: contain;
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.ai-entry:hover {
+    transform: translateY(-4px) scale(1.06);
+    background: rgba(147, 168, 176, 0.9);
+    box-shadow:
+        0 14px 34px rgba(0, 0, 0, 0.35),
+        0 0 22px rgba(107, 137, 255, 0.45);
+}
+
+.ai-entry:active {
+    transform: translateY(-1px) scale(0.98);
+}
+
+@keyframes aiEntryIn {
+    from {
+        opacity: 0;
+        transform: translateY(24px) scale(.9);
+    }
+
+    to {
+        opacity: 1;
+        transform: none;
+    }
 }
 
 </style>

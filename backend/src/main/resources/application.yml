@@ -14,7 +14,14 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     # 数据源类型：Druid
     type: com.alibaba.druid.pool.DruidDataSource
-
+  #redis配置
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      password:            # 没有密码则留空
+      database: 0
+      timeout: 5000ms
 # 服务端口
 server:
   port: 8081
@@ -40,11 +47,14 @@ mybatis-plus:
 ai:
   api:
     url: https://api.deepseek.com/chat/completions
-    base-url: ${AI_BASE_URL:https://api.deepseek.com}
-    key: ${APIKEY_GAME}
-    model: deepseek-v4-pro
+#    base-url: ${AI_BASE_URL:https://api.deepseek.com}
+#    key: ${APIKEY_GAME}
+#    model: deepseek-flash
+    base-url: "https://maas.qianwenaiapi.com/compatible-mode/v1"
+    key: ${QWEN_API_KEY}
+    model: "deepseek-v4.1-flash"
     max-tokens: 6000
-    temperature: 0.3
+    temperature: 0.2
     http:
       connect-timeout: 5000
       read-timeout: 60000

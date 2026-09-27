@@ -1,0 +1,44 @@
+# GameList 上线用的 nginx 配置示例（按需改域名、路径、后端端口）
+#
+# 要点：
+#  1. /api/ 转发到后端，proxy_pass 结尾的 "/" 会自动去掉 /api 前缀，
+#     和后端没有 context-path 的路由（/login、/ai、/chatmsg…）对齐
+#  2. SSE（/chatconnect、/chatmsg 的推送）必须关掉 proxy_buffering，
+#     否则逐字流式会变成"攒够了一次性吐出来"
+#  3. vue-router 是 history 模式，静态站点要 try_files 回退到 index.html
+
+server {
+    listen 80;
+    server_name your-domain.com;
+
+    # 前端静态资源
+    root /var/www/gamelist/dist;
+    index index.html;
+
+    location / {
+        try_files $uri $uri/ /index.html;   # history 模式，刷新子路由不 404
+    }
+
+    # 后端接口
+    location /api/ {
+        proxy_pass http://127.0.0.1:8081/;  # ← 结尾的 / 负责去掉 /api 前缀
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header Connection '';      # SSE 长连接
+
+        proxy_buffering off;                 # ★ 逐字流式的关键
+        proxy_cache off;
+        proxy_read_timeout 3600s;            # 后端 SseEmitter 超时是 30 分钟
+        proxy_send_timeout 3600s;
+        chunked_transfer_encoding on;
+    }
+
+    # 静态资源缓存（可选，按需开）
+    # location ~* \.(js|css|png|jpg|jpeg|gif|webp|svg|woff2?)$ {
+    #     expires 7d;
+    #     add_header Cache-Control "public, max-age=604800";
+    # }
+}

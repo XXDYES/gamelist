@@ -26,4 +26,14 @@ public interface MessageMapper extends BaseMapper<Message> {
     int isShared(@Param("fromId") Integer fromId,
                           @Param("toId") Integer toId,
                           @Param("gameId") Integer gameId);
+    @Select("SELECT COUNT(*) FROM messages " +
+            "WHERE from_id = #{fromId} " +
+            "  AND to_id = #{toId} " +
+            "  AND game_id = #{gameId} " +
+            "  AND type = 1 " +
+            "  AND status = 0")
+    int isApply(@Param("fromId") Integer fromId,
+                 @Param("toId") Integer toId,
+                 @Param("gameId") Integer gameId);
+
 }

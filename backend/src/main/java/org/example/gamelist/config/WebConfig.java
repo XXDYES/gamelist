@@ -16,6 +16,6 @@ public class WebConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(jwtInterceptor)
                 .addPathPatterns("/**")                           // 拦截所有请求
-                .excludePathPatterns("/ai","/login", "/register");     // 放行登录和注册接口
+                .excludePathPatterns("/login", "/register", "/chatconnect");     // 放行登录、注册、SSE 连接
     }
 }

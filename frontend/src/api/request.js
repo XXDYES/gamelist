@@ -1,9 +1,10 @@
 import axios from "axios";
 import router from "@/router";
 import { ElMessage } from "element-plus";
+import { API_BASE } from "./base";
 
 const request = axios.create({
-    baseURL: 'http://localhost:8081',
+    baseURL: API_BASE,
     timeout: 40000,
     withCredentials: true,
 })
