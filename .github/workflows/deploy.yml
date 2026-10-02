@@ -1,0 +1,116 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'backend/**'
+      - 'frontend/**'
+      - '.github/workflows/deploy.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-prod
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+
+      - name: Build backend
+        working-directory: backend
+        run: mvn -B clean package -DskipTests
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Build frontend
+        working-directory: frontend
+        run: |
+          npm ci
+          npm run build
+
+      - name: Upload artifacts
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          port: 22
+          source: "backend/target/*.jar,frontend/dist/*"
+          target: "/opt/gamelist/incoming"
+          strip_components: 0
+          overwrite: true
+          rm: true
+
+      - name: Deploy on server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          port: 22
+          command_timeout: 10m
+          script: |
+            set -euo pipefail
+
+            INCOMING=/opt/gamelist/incoming
+            APP=/opt/gamelist/gamelist-0.0.1-SNAPSHOT.jar
+            WEB=/var/www/gamelist/dist
+
+            echo "===== 校验产物 ====="
+            JAR=$(find "$INCOMING/backend/target" -maxdepth 1 -name '*.jar' ! -name '*.original' | head -n 1)
+            test -n "$JAR"
+            test -d "$INCOMING/frontend/dist"
+            echo "jar: $JAR"
+
+            echo "===== 换后端 jar ====="
+            cp "$APP" "$APP.bak"
+            install -m 644 "$JAR" "$APP.new"
+            mv "$APP.new" "$APP"
+
+            echo "===== 换前端（临时目录 + 原子换名）====="
+            rm -rf "$WEB.new" "$WEB.old"
+            mkdir -p "$WEB.new"
+            cp -r "$INCOMING/frontend/dist/." "$WEB.new/"
+            find "$WEB.new" -type d -exec chmod 755 {} +
+            find "$WEB.new" -type f -exec chmod 644 {} +
+            mv "$WEB" "$WEB.old"
+            mv "$WEB.new" "$WEB"
+
+            echo "===== 重启后端 ====="
+            sudo systemctl restart gamelist
+
+            echo "===== 健康检查（最多等 60s）====="
+            ok=0
+            for i in $(seq 1 20); do
+              if ss -ltn | grep -q '127.0.0.1:8081'; then ok=1; break; fi
+              sleep 3
+            done
+            if [ "$ok" -ne 1 ]; then
+              echo "8081 没起来，回滚"
+              mv "$WEB" "$WEB.failed" && mv "$WEB.old" "$WEB"
+              cp "$APP.bak" "$APP"
+              sudo systemctl restart gamelist || true
+              tail -n 50 /opt/gamelist/logs/gamelist.log || true
+              exit 1
+            fi
+            sudo systemctl is-active gamelist
+
+            echo "===== 清理 ====="
+            rm -rf "${WEB:?}.old" "${INCOMING:?}"/*
+            ls -lh "$APP"
+            echo "===== 部署完成 ====="
