@@ -108,7 +108,7 @@ jobs:
               tail -n 50 /opt/gamelist/logs/gamelist.log || true
               exit 1
             fi
-            sudo systemctl is-active gamelist
+            systemctl is-active gamelist
 
             echo "===== 清理 ====="
             rm -rf "${WEB:?}.old" "${INCOMING:?}"/*
