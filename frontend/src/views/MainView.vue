@@ -19,6 +19,8 @@
                 GAMELIST V1.0
             </div>
             <div style="margin-left: auto;display: flex;align-items: center;">
+                <a href="https://github.com/XXDYES/gamelist" style="margin-right: 20px;line-height: 0;">
+                    <img :src="github" alt="GitHub" width="24" height="24"></a>
                 <MessageTab @accept-share="fetchGameList"/>
                 <FriendTab/>
                 <el-avatar :size="35"> user </el-avatar><span style="color: white;margin: 0 20px 0 10px;font-size: large;">{{
@@ -111,6 +113,7 @@ import router from '@/router';
 import { gameApi, commentApi } from '@/api'
 import { useUserStore } from '@/store/user'
 import thinkingImg from '@/assets/naiwa_thinking.png'
+import github from '@/assets/github.png'
 const userStore = useUserStore()
 const bglist = [
     require('@/assets/re9.jpg'),
