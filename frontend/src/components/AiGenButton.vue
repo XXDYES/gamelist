@@ -6,7 +6,7 @@
     </div>
 </template>
 <script setup>
-const props = defineProps({
+defineProps({
     loading:{type: Boolean,default:false}
 })
 const emit = defineEmits(['click'])

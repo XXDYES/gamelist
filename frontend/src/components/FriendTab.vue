@@ -121,7 +121,6 @@ const getFriendList = async () => {
         const res = await friendApi.getFriendList()
         if (res.data.code == '200') {
             friendList.value = res.data.data
-            console.log("好友列表：", friendList.value)
         }
     } catch (e) { ElMessage.error("获取好友列表失败") }
 }
@@ -130,7 +129,6 @@ const getFriQuestList = async () => {
         const res = await friendApi.getFriQuestList()
         if (res.data.code == '200') {
             friQuestList.value = res.data.data
-            console.log("好友申请列表：", friQuestList.value)
         }
     } catch (e) { ElMessage.error("获取好友申请失败") }
 }

@@ -136,7 +136,6 @@ const aiGenerate = async () => {
             ElMessage.error('游戏名不能为空')
         }
     } catch (error) {
-        console.error('请求失败：', error);
         ElMessage.error('请求失败')
     } finally { aiLoading.value = false }
 }

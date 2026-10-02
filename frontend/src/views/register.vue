@@ -40,11 +40,11 @@
 </template>
 <script setup>
 import bgVideo from '@/assets/register_bg.webm'
-import { User, Search, Lock } from '@element-plus/icons-vue'
+import { User, Lock } from '@element-plus/icons-vue'
 import { reactive, ref, onMounted } from 'vue'
 import axios from 'axios'
 import router from '@/router'
-import { ElMessage, ElMessageBox } from 'element-plus'
+import { ElMessage } from 'element-plus'
 import { userApi } from '@/api'
 const pageReady = ref(false)
 const onVideoReady = () => {
@@ -72,7 +72,6 @@ const registerin = () => {
       router.push("/login")
     } else { ElMessage(res.data.msg) }
   }).catch(error => {
-    console.error('注册请求异常：', error) // 控制台打印便于调试
     ElMessage('注册网络异常')
   })
     .finally(() => { loading.value = false })

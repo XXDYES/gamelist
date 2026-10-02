@@ -21,19 +21,6 @@ public class SseSession {
         }
         SESSION.put(id, emitter);
     }
-    /** 主动关闭会话：按 id 找到就移除并关闭（供外部主动踢人用） */
-    public static boolean del(String id){
-        final SseEmitter emitter = SESSION.remove(id);
-        if(emitter != null){
-            try {
-                emitter.complete();
-            } catch (Exception e) {
-                log.warn("关闭 emitter 失败 | ID: {} | Error: {}", id, e.getMessage());
-            }
-            return true;
-        }else {return false;}
-    }
-
     /**
      * 条件移除：只有该 id 仍然指向同一个 emitter 时才移除并关闭。
      * 生命周期回调（onCompletion/onTimeout/onError）和发送失败必须走这个重载——

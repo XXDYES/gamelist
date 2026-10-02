@@ -18,6 +18,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.TextStyle;
@@ -26,7 +28,6 @@ import java.time.format.TextStyle;
 @Component
 public class ChatClientImpl implements ChatClient {
 
-    /** 对话系统提示词（提成常量，便于写探针时反射读取同一份文本） */
     private static final String CHAT_INSTRUCTIONS =
             "你是一位游戏信息助手，回答用户游戏相关的问题；如果问题与游戏不相关，" +
             "则回答：不是哥们，能不能问点游戏相关的？" +
@@ -71,8 +72,6 @@ public class ChatClientImpl implements ChatClient {
 
     @Override
     public void getAnswer(String msg){
-        // UserContext 是 ThreadLocal：必须在当前 HTTP 请求线程里取出并捕获进 lambda，
-        // 因为 subscribe 的回调跑在 Reactor Netty 线程上，那里取不到、也已经被 afterCompletion 清掉了
         Integer userId = UserContext.getCurrentId();
         if (userId == null) {
             log.warn("拿不到当前用户，无法推送 SSE");
@@ -80,10 +79,11 @@ public class ChatClientImpl implements ChatClient {
         }
         final String clientId = String.valueOf(userId);
 
-        // ① 用户消息先落库，② 再把完整上下文读出来交给模型
         chatHistoryStore.appendUser(clientId, msg);
         List<Map<String, Object>> input = chatHistoryStore.load(clientId);
         String profile = buildGameProfile(userId);
+        log.info("对话开始 | clientId: {} | 历史 {} 条 | 本次输入 {} 字 | 游戏库 {} 字",
+                clientId, input.size(), msg.length(), profile.length());
 
         Map<String, Object> requestBody = Map.of(
                 "model", "deepseek-v4.1-flash",
@@ -95,6 +95,10 @@ public class ChatClientImpl implements ChatClient {
                 "tools", List.of(Map.of("type", "web_search"))
         );
 
+        long start = System.currentTimeMillis();
+        AtomicLong firstTokenAt = new AtomicLong();
+        AtomicInteger outputChars = new AtomicInteger();
+
         webClient.post()
             .uri("/responses")
             .contentType(MediaType.APPLICATION_JSON)
@@ -103,21 +107,27 @@ public class ChatClientImpl implements ChatClient {
             .retrieve()
             .bodyToFlux(String.class)
             .takeUntil(this::isFinalEvent)      // ⭐ 先检测最终事件，终止流
-            .doOnNext(event -> {saveAnswerIfCompleted(clientId, event);})  // ⭐ 从完成事件取全文落库
+            .doOnNext(event -> outputChars.set(saveAnswerIfCompleted(clientId, event)))  // ⭐ 从完成事件取全文落库
             .mapNotNull(this::extractTextDelta)     // ⭐ 再提取 delta（最终事件返回 null，被过滤）
-            .doFinally(signal -> sendDone(clientId))    // ⭐ 无论正常结束还是出错，都补一个结束帧
+            .doFinally(signal -> {
+                long first = firstTokenAt.get() == 0 ? 0 : firstTokenAt.get() - start;
+                log.info("对话结束 | clientId: {} | 首字 {} | 总耗时 {} ms | 输出 {} 字 | 结束信号 {}",
+                        clientId, first == 0 ? "未产出" : first + " ms",
+                        System.currentTimeMillis() - start, outputChars.get(), signal);
+                sendDone(clientId);     // ⭐ 无论正常结束还是出错，都补一个结束帧
+            })
             .subscribe(
                     data -> {
-                        // ⭐ 转义成 JSON 字符串再发：delta 里可能含真换行，
-                        // 裸换行会被 SSE 当成帧分隔符吃掉，换行后面的文字甚至会被整段丢弃
+                        if (firstTokenAt.get() == 0) {
+                            firstTokenAt.set(System.currentTimeMillis());
+                        }
                         try {
                             SseSession.send(clientId, objectMapper.writeValueAsString(data));
                         } catch (Exception e) {
                             log.warn("SSE 载荷转义失败，跳过本次增量", e);
                         }
                     },
-                    err -> log.error("对话流式调用失败 | clientId: {}", clientId, err),
-                    () -> log.debug("对话流结束 | clientId: {}", clientId)
+                    err -> log.error("对话流式调用失败 | clientId: {}", clientId, err)
             );
     }
     private String buildInstructionsWithDate(String profile) {
@@ -137,7 +147,6 @@ public class ChatClientImpl implements ChatClient {
         return head + profile + CHAT_INSTRUCTIONS;
     }
 
-    /** 把用户收藏库拼成「游戏名(星级)」的字符串，直接塞进提示词；空库返回空串 */
     private String buildGameProfile(Integer userId) {
         List<GameVO> games;
         try {
@@ -163,11 +172,13 @@ public class ChatClientImpl implements ChatClient {
         }
         return profile.toString();
     }
-    private void saveAnswerIfCompleted(String clientId, String sseData) {
+    private int saveAnswerIfCompleted(String clientId, String sseData) {
         String full = extractFinalText(sseData);
-        if (full != null && !full.isBlank()) {
-            chatHistoryStore.appendAssistant(clientId, full);
+        if (full == null || full.isBlank()) {
+            return 0;
         }
+        chatHistoryStore.appendAssistant(clientId, full);
+        return full.length();
     }
 
     private void sendDone(String clientId) {
@@ -211,7 +222,6 @@ public class ChatClientImpl implements ChatClient {
             JsonNode event = objectMapper.readTree(sseData);
             String type = event.path("type").asText();
 
-            // ⭐ 只处理文本增量事件
             if ("response.output_text.delta".equals(type)) {
                 JsonNode delta = event.path("delta");
                 if (delta.isMissingNode() || delta.isNull()) {
@@ -219,7 +229,7 @@ public class ChatClientImpl implements ChatClient {
                 }
                 return delta.asText();
             }
-            // 其他事件类型忽略
+
             return null;
         } catch (Exception e) {
             log.warn("解析 SSE 事件失败: {}", sseData);

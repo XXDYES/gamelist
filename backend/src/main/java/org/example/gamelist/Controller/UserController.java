@@ -21,13 +21,11 @@ public class UserController {
     @RequestMapping(value = "/login", method = {RequestMethod.POST, RequestMethod.GET})
         public Result<String> login(@RequestBody User user){
         try {
-            // 1. 调用 Service 登录，返回 User 对象
             User dbUser = loginService.login(user);
             log.info(String.format("%s登录了",dbUser.getUsername()));
-            // 2. 生成 JWT Token
+
             String token = jwtUtil.generateToken(dbUser);
 
-            // 3. 返回 Token（String 类型）
             return Result.success(token);  // ✅ Result<String>
         } catch (BusinessException e) {
             return Result.error(e.getMsg());
@@ -39,13 +37,12 @@ public class UserController {
         if (userId == null) {
             return Result.error("用户未登录");
         }
-        // 从数据库查询最新用户信息
+
         User user = loginService.getUserById(userId);
         if (user == null) {
             return Result.error("用户不存在");
         }
 
-        // 不返回密码等敏感信息
         user.setPassword("就不告诉你");
         return Result.success(user);
     }

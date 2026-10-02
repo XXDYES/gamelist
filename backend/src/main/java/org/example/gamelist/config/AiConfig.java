@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 @Component
 @ConfigurationProperties(prefix= "ai.api")
 public class AiConfig {
-    private String url;
     private String key;
     private String model;
     private Integer maxTokens;

@@ -28,12 +28,12 @@
                     <el-form-item prop="password">  
                         <el-input size="large" placeholder="请输入密码" :prefix-icon="Lock" v-model="data.user.password" show-password></el-input>
                     </el-form-item>
-                    <el-form-item style="display: flex;">
+                    <!-- <el-form-item style="display: flex;">
                         <div style="flex: 1; margin-right: 10px;">
                             <el-input v-model="authcode"size="large" placeholder="请输入验证码" :prefix-icon="Search" ></el-input>
                         </div>
                         <div class="captcha">1234</div>                  
-                    </el-form-item>
+                    </el-form-item> -->
                     <el-form-item style="display: flex;">                    
                         <el-button class="login-btn" style="width: 100%;margin: auto;" :loading="loading" @click="loginin">登 录</el-button>                                        
                     </el-form-item>
@@ -54,7 +54,7 @@ import { User, Search,Lock } from '@element-plus/icons-vue'
 import { reactive, ref, onMounted } from 'vue'
 import axios from 'axios'
 import router from '@/router'
-import { ElMessage,ElMessageBox} from 'element-plus'
+import { ElMessage } from 'element-plus'
 import { userApi } from '@/api'
 const data = reactive({
     user:{username: '',password: ''},
@@ -72,7 +72,7 @@ const loading = ref(false)
 const authcode = ref('')
 const loginin=()=>{
     loading.value = true
-    userApi.login(data.user).then(res=>{ console.log("后端返回的完整数据：", res); 
+    userApi.login(data.user).then(res=>{
         if(res.data.code==="200"){
              const token = res.data.data;  // Token 在 data 字段里
             localStorage.setItem("userToken", token);  // 直接用字符串存
@@ -81,7 +81,6 @@ const loginin=()=>{
         }else{  ElMessage(res.data.msg)            
         }
     }) .catch(error => {
-        console.error('登录请求异常：', error) // 控制台打印便于调试
         ElMessage('登陆异常')
       })
       .finally(() => { loading.value = false })

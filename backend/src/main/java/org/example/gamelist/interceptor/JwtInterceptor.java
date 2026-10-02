@@ -19,7 +19,6 @@ public class JwtInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
     throws Exception{
         String path = request.getRequestURI();
-        System.out.println("🔍 拦截器检查路径：" + path);
         // 1. 从请求头中获取 Token
         String authHeader = request.getHeader("Authorization");
         if (authHeader == null || !authHeader.startsWith("Bearer ")){

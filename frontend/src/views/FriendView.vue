@@ -101,8 +101,8 @@
     </div>
 </template>
 <script setup>
-import { Back, Plus, Search, Sort, Menu, User, Message } from '@element-plus/icons-vue'
-import { computed, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue';
+import { Back, Search, Sort, Menu } from '@element-plus/icons-vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { ElMessage } from 'element-plus'
 import WallpaperSwitch from '@/components/WallpaperSwitch.vue';
 import GameCardList from '@/components/GameCardList.vue';
@@ -111,7 +111,7 @@ import MessageTab from '@/components/MessageTab.vue';
 import echarts from '@/utils/echart'
 import 'element-plus/dist/index.css'
 import router from '@/router';
-import { userApi, gameApi, commentApi, friendApi } from '@/api'
+import { commentApi, friendApi } from '@/api'
 import { useUserStore } from '@/store/user'
 import { useRoute } from 'vue-router';
 const userStore = useUserStore()
@@ -123,7 +123,6 @@ const bglist = [
 const bgIndex = Number(localStorage.getItem('bgIndex')) || 0
 const curbgurl = ref(bglist[bgIndex % bglist.length])
 // ========== 新增：用户信息 ==========
-const userInfo = ref({ username: '未登录' });
 const keyword = ref('')
 const inputword = ref('')
 const sortField = ref('addDate')
@@ -140,7 +139,6 @@ const getComment = async () => {
             map[c.gameId].push(c)
         });
         comments.value = map
-        console.log('评论列表：', comments.value)
     } else { ElMessage.error('获取评论失败') }
 }
 const getFriInfo = async () => {
@@ -163,16 +161,13 @@ const fetchGameList = async () => {
         const res = await friendApi.getFriGame(route.params.id);
         if (res.data.code === "200") {
             gamelist.value = res.data.data;
-            console.log('好友游戏列表:', gamelist.value);
         }else{ElMessage.error(res.data.msg);router.push('/gamelist')}
     } catch (error) {
-        console.error('获取列表失败：', error);
         ElMessage.error('获取列表失败');
     }
 };
 const activeTab = ref('notplayed')
 const value = ref()
-const dialogVisable = ref(false)
 const backhome = () => {
     router.push("/gamelist")
 }

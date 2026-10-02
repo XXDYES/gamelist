@@ -68,7 +68,7 @@
     </el-drawer>
 </template>
 <script setup>
-import { computed, nextTick, onMounted, ref } from 'vue';
+import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue';
 import nailongava from '@/assets/naiwa_thinking.png'
 import { Close,InfoFilled } from '@element-plus/icons-vue';
 import { API_BASE } from '@/api/base'
@@ -105,9 +105,6 @@ const connect = () => {
     disconnect()
     const url = `${BASE}/chatconnect?clientId=${encodeURIComponent(clientId.value)}`
     es = new EventSource(url)
-    es.onopen = () => {
-       console.log("SSE连接成功")
-    }
     es.onmessage = (e) => { 
         if (e.data == 'DONE' || e.data == '"DONE"') {
             sending.value = false
@@ -161,10 +158,10 @@ const sendMsg = async (text) => {
     if (sending.value) return
     sending.value = true
     answer.value = ''
+    chatHistory.value.push({role: 'user', content: text })
     try {
         const res = await chatApi.chatMsg(text)
         if (res.data.code == '200') {
-            chatHistory.value.push({role: 'user', content: text })
             msg.value = ''
             scrollToBottom(true)
         } else {
@@ -188,7 +185,6 @@ onMounted(async () => {
         await userStore.fetchUserInfo()
         clientId.value = String(userStore.id ?? '')
     } catch (e) {
-        console.log("未获取到用户信息")
     }
     connect()   // 进页面自动连
 })

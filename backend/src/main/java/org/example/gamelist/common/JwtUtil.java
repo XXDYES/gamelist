@@ -17,8 +17,6 @@ import java.util.Map;
 public class JwtUtil {
 
     private static final long EXPIRE_TIME = 7 * 24 * 60 * 60 * 1000L;
-
-    // 密钥从配置 app.jwt.secret（环境变量 JWT_SECRET）注入，不在源码中写死
     private final SecretKey key;
 
     public JwtUtil(@Value("${app.jwt.secret}") String secret) {

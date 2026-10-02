@@ -1,0 +1,50 @@
+spring:
+  datasource:
+    url: "jdbc:mysql://127.0.0.1:3306/gamelist?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&enabledTLSProtocols=TLSv1.2"
+    username: gamelist
+    password: ${DB_PASSWORD}
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      initial-size: 3
+      min-idle: 3
+      max-active: 15
+      max-wait: 10000
+      validation-query: SELECT 1
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
+      time-between-eviction-runs-millis: 60000
+      min-evictable-idle-time-millis: 300000
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
+      password: ${REDIS_PASSWORD:}
+      database: 0
+      timeout: 3000ms
+  flyway:
+    baseline-on-migrate: false
+  lifecycle:
+    timeout-per-shutdown-phase: 30s
+
+server:
+  port: 8081
+  address: 127.0.0.1
+  forward-headers-strategy: framework
+  shutdown: graceful
+  tomcat:
+    threads:
+      max: 100
+      min-spare: 10
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl
+
+logging:
+  level:
+    root: info
+    org.example: info
+    io.lettuce.core: warn
+  file:
+    name: logs/gamelist.log

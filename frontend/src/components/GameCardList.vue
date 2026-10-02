@@ -3,12 +3,14 @@
         <div v-if="games.length === 0" class="empty-tip">此处无数据，快添加吧</div>
         <el-collapse-item v-else v-for="game in games" :key="game.id" :name="String(game.id)">
             <template #title>
-                <div class="itembox-content">
-                    <span style="font-size: 26px;">🎯{{ game.name }}</span>
-                    <span class="game-tag">🏢:{{ game.company }}</span>
-                    <span class="game-tag">🖥️:{{ game.platform }}</span>
-                    <span class="game-tag">🕹️:{{ game.type }}</span>
-                </div>
+                <el-scrollbar class="itembox-scroll" @mousedown.capture="onBarMousedown" @click="onBarClick">
+                    <div class="itembox-content">
+                        <span style="font-size: 26px;">🎯{{ game.name }}</span>
+                        <span class="game-tag">🏢:{{ game.company }}</span>
+                        <span class="game-tag">🖥️:{{ game.platform }}</span>
+                        <span class="game-tag">🕹️:{{ game.type }}</span>
+                    </div>
+                </el-scrollbar>
                 <div @click.stop style="display: flex; align-items: center; flex: 0 0 auto; margin-left: auto;">
                     <el-rate v-model="game.rating" v-if="game.played != 0" :texts="['拉完了', '拉', 'NPC', '夯', '夯爆了']"
                         size="large" show-text style="pointer-events: auto !important;" @change="setRating(game)"
@@ -157,6 +159,16 @@ const resetComment = () => {
     cmtrating.value = 0
     comment.value = ''
 }
+let barDragging = false
+const onBarMousedown = (e) => {
+    barDragging = !!e.target.closest?.('.el-scrollbar__bar')
+}
+const onBarClick = (e) => {
+    if (barDragging) {
+        barDragging = false
+        e.stopPropagation()
+    }
+}
 const confirmStatus = (game) => {
     emit('change-status', { game, played: playStatus.value })
 }
@@ -262,41 +274,43 @@ const applyShare = async(gameId) => {
     background: transparent;
 }
 
+.custom-collapse :deep(.el-collapse-item__title .itembox-scroll) {
+    flex: 1;
+    min-width: 0;
+    height: 40px;
+    /* header 是 pointer-events:none，需单独恢复滚动区的交互 */
+    pointer-events: auto;
+}
+
+.custom-collapse :deep(.el-collapse-item__title .itembox-scroll .el-scrollbar__wrap) {
+    pointer-events: auto;
+    /* el-scrollbar 默认纵横都能滚，这里锁死纵向 */
+    overflow-y: hidden;
+}
+
+.custom-collapse :deep(.el-collapse-item__title .itembox-scroll .el-scrollbar__view) {
+    width: max-content;
+}
+
 .custom-collapse :deep(.el-collapse-item__title .itembox-content) {
     display: flex;
     align-items: center;
     height: 40px;
     gap: 10px;
-    flex: 1;
-    width: 100%;
-    min-width: 0;
-    /* 关键：允许容器被压缩，溢出才会触发滚动 */
-    overflow-x: auto;
-    /* 开启水平滚动 */
-    overflow-y: hidden;
-    /* 显式锁死垂直方向，避免隐性 auto 冒出垂直滚动条 */
-    scrollbar-width: thin;
-    /* Firefox：显示细滚动条 */
-    scrollbar-color: rgba(0, 0, 0, 0.25) transparent;
-    pointer-events: auto;
-    /* header 是 pointer-events:none，需单独恢复滚动区的交互 */
+    width: max-content;
 }
 
-.custom-collapse :deep(.el-collapse-item__title .itembox-content::-webkit-scrollbar) {
-    height: 2px;
+.custom-collapse :deep(.el-scrollbar__bar.is-horizontal) {
+    height: 6px;
+    bottom: 0;
 }
 
-.custom-collapse :deep(.el-collapse-item__title .itembox-content::-webkit-scrollbar-track) {
-    background: rgba(0, 0, 0, 0.06);
-    border-radius: 2px;
-}
-
-.custom-collapse :deep(.el-collapse-item__title .itembox-content::-webkit-scrollbar-thumb) {
+.custom-collapse :deep(.el-scrollbar__bar.is-horizontal .el-scrollbar__thumb) {
     background: rgba(0, 0, 0, 0.25);
-    border-radius: 2px;
+    opacity: 1;
 }
 
-.custom-collapse :deep(.el-collapse-item__title .itembox-content::-webkit-scrollbar-thumb:hover) {
+.custom-collapse :deep(.el-scrollbar__bar.is-horizontal .el-scrollbar__thumb:hover) {
     background: rgba(0, 0, 0, 0.4);
 }
 

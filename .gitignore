@@ -16,3 +16,6 @@ desktop.ini
 
 # 本地 GitHub CLI 副本（Codex 沙箱执行用，勿提交）
 .gh/
+
+# 截图原图（体积大，只保留压缩后的 WebP）
+docs/images/originals/

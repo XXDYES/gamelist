@@ -52,7 +52,6 @@ const getFriendList = async () => {
         const res = await friendApi.getFriendList()
         if (res.data.code == '200') {
             friendList.value = res.data.data
-            console.log("好友列表：", friendList.value)
         }
     } catch (e) { ElMessage.error("获取好友列表失败") }
 }

@@ -3,6 +3,7 @@ package org.example.gamelist.config;
 import io.netty.channel.ChannelOption;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.handler.timeout.WriteTimeoutHandler;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,6 +16,7 @@ import reactor.netty.resources.ConnectionProvider;
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
+@Slf4j
 @Configuration
 public class WebClientConfig {
 
@@ -32,6 +34,7 @@ public class WebClientConfig {
 
     @Bean
     public WebClient aiWebClient(WebClient.Builder builder) {
+        log.info("AI 端点：{} | key: {}", baseUrl, maskKey(apiKey));
         // 连接池：空闲超过 20s 的连接不再复用。
         ConnectionProvider provider = ConnectionProvider.builder("ai")
                 .maxIdleTime(Duration.ofSeconds(20))
@@ -56,5 +59,9 @@ public class WebClientConfig {
                 // 默认上限只有 256KB，web_search 的结果可能撑爆，放到 2MB
                 .codecs(c -> c.defaultCodecs().maxInMemorySize(2 * 1024 * 1024))
                 .build();
+    }
+
+    private String maskKey(String key) {
+        return key == null || key.length() < 6 ? "未配置" : key.substring(0, 6) + "***";
     }
 }

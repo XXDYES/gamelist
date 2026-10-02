@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.example.gamelist.client.AiClient;
+import org.example.gamelist.common.UserContext;
 import org.example.gamelist.config.AiConfig;
 import org.example.gamelist.dto.GameInfoDTO;
 import org.example.gamelist.exception.AiServiceException;
@@ -18,12 +19,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * 调用 DeepSeek 的 Responses API（POST /responses，OpenAI 兼容格式）。
- * <p>
- * 启用内置 web_search 工具并关闭思考模式。每次响应会在日志里报告
- * output item 类型、web_search_call 次数、耗时与 token 用量。
- */
 @Slf4j
 @Component
 public class DeepSeekClientImpl implements AiClient {
@@ -35,6 +30,8 @@ public class DeepSeekClientImpl implements AiClient {
     public DeepSeekClientImpl(WebClient aiWebClient, AiConfig aiConfig) {
         this.webClient = aiWebClient;
         this.aiConfig = aiConfig;
+        log.info("AI 模型：{} | maxTokens={} | temperature={}",
+                aiConfig.getModel(), aiConfig.getMaxTokens(), aiConfig.getTemperature());
     }
 
     @Override
@@ -45,15 +42,16 @@ public class DeepSeekClientImpl implements AiClient {
         long start = System.currentTimeMillis();
         try {
             GameInfoDTO dto = callResponsesApi(gameName.trim()).block();
-            log.info("AI 调用耗时 {} ms", System.currentTimeMillis() - start);
+            log.info("{} {} AI 调用耗时 {} ms", UserContext.getCurrentUsername(), gameName,
+                    System.currentTimeMillis() - start);
             return dto;
         } catch (AiServiceException e) {
             throw e;
         } catch (WebClientResponseException e) {
-            log.error("AI 接口返回 {}: {}", e.getStatusCode(), e.getResponseBodyAsString());
+            log.error("AI 接口返回 {}: {} | game={}", e.getStatusCode(), e.getResponseBodyAsString(), gameName);
             throw new AiServiceException("AI 服务调用失败，状态码 " + e.getStatusCode());
         } catch (Exception e) {
-            log.error("调用 DeepSeek Responses API 失败", e);
+            log.error("调用 DeepSeek Responses API 失败 | game={}", gameName, e);
             throw new AiServiceException("AI 服务调用失败: " + e.getMessage(), e);
         }
     }
@@ -65,8 +63,8 @@ public class DeepSeekClientImpl implements AiClient {
                 .bodyValue(buildRequestBody(gameName))
                 .retrieve()
                 .bodyToMono(JsonNode.class)
-                .map(this::extractOutputText)
-                .map(this::parseAndValidate);
+                .map(json -> extractOutputText(json, gameName))
+                .map(text -> parseAndValidate(text, gameName));
     }
 
     private Map<String, Object> buildRequestBody(String gameName) {
@@ -99,11 +97,7 @@ public class DeepSeekClientImpl implements AiClient {
         return requestBody;
     }
 
-    /**
-     * 从 Responses API 完整响应中提取 output_text。
-     * 响应结构：output 数组 → 找到 type=message 的项 → content 数组 → 找到 type=output_text 的项 → text 字段
-     */
-    private String extractOutputText(JsonNode response) {
+    private String extractOutputText(JsonNode response, String gameName) {
         JsonNode output = response.path("output");
         if (output.isMissingNode() || !output.isArray()) {
             throw new AiServiceException("响应中缺少 output 字段");
@@ -118,11 +112,12 @@ public class DeepSeekClientImpl implements AiClient {
         }
 
         JsonNode usage = response.path("usage");
-        log.info("AI 用量：input={} cached={} output={} reasoning={}",
+        log.info("AI 用量：input={} cached={} output={} reasoning={} | game={}",
                 usage.path("input_tokens").asInt(),
                 usage.path("input_tokens_details").path("cached_tokens").asInt(),
                 usage.path("output_tokens").asInt(),
-                usage.path("output_tokens_details").path("reasoning_tokens").asInt());
+                usage.path("output_tokens_details").path("reasoning_tokens").asInt(),
+                gameName);
 
         // 统计 output item 类型，确认 web_search 到底执行了几次
         List<String> itemTypes = new ArrayList<>();
@@ -134,10 +129,9 @@ public class DeepSeekClientImpl implements AiClient {
                 searchCalls++;
             }
         }
-        log.info("output items: {} ，其中 web_search_call {} 次", itemTypes, searchCalls);
-        // 提示词只能"大概率"约束搜索次数，超阈值时留个明确信号，便于事后发现异常消耗
+        log.info("output items: {} ，其中 web_search_call {} 次 | game={}", itemTypes, searchCalls, gameName);
         if (searchCalls > 2) {
-            log.warn("本次联网搜索 {} 次，超过预期阈值 2 次，请留意成本", searchCalls);
+            log.warn("本次联网搜索 {} 次，超过预期阈值 2 次，请留意成本 | game={}", searchCalls, gameName);
         }
 
         for (JsonNode item : output) {
@@ -155,11 +149,11 @@ public class DeepSeekClientImpl implements AiClient {
         throw new AiServiceException("响应中未找到 output_text");
     }
 
-    private GameInfoDTO parseAndValidate(String jsonContent) {
+    private GameInfoDTO parseAndValidate(String jsonContent, String gameName) {
         if (jsonContent == null || jsonContent.isEmpty()) {
             throw new AiServiceException("AI 返回内容为空");
         }
-        log.info("AI 返回的完整 JSON: {}", jsonContent);
+        log.info("AI 返回的完整 JSON: {} | game={}", jsonContent, gameName);
         try {
             return objectMapper.readValue(jsonContent, GameInfoDTO.class);
         } catch (Exception e) {
